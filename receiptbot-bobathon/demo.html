@@ -1083,8 +1083,8 @@
                     
                     if (isEditing) {
                         return `
-                            <div class="expense-item editing" id="expense-${exp.id}">
-                                <div class="expense-info" style="flex: 1;">
+                            <div class="expense-item editing" id="expense-${exp.id}" style="flex-direction: column;">
+                                <div class="expense-info" style="width: 100%;">
                                     <div class="edit-section">
                                         <label class="edit-label">Merchant Name</label>
                                         <input type="text" id="edit-merchant-${exp.id}" class="edit-field" value="${exp.merchant}" placeholder="Enter merchant name">
@@ -1107,14 +1107,14 @@
                                     </div>
                                     <div id="error-${exp.id}"></div>
                                 </div>
-                                <div class="expense-actions" style="flex-direction: column; gap: 5px;">
-                                    <button class="btn btn-success btn-small" onclick="saveEditedExpense(${exp.id})">
-                                        💾 Save
-                                    </button>
+                                <div class="expense-actions" style="flex-direction: row; gap: 10px; width: 100%; justify-content: flex-end; margin-top: 15px;">
+                                    <span id="save-indicator-${exp.id}" class="save-indicator" style="display: none; margin-right: auto;">✅ Saved!</span>
                                     <button class="btn btn-secondary btn-small" onclick="cancelEdit()">
                                         ❌ Cancel
                                     </button>
-                                    <span id="save-indicator-${exp.id}" class="save-indicator" style="display: none;">✅ Saved!</span>
+                                    <button class="btn btn-success btn-small" onclick="saveEditedExpense(${exp.id})">
+                                        💾 Save
+                                    </button>
                                 </div>
                             </div>
                         `;
