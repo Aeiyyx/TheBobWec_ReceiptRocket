@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 ReceiptRocket - AI-Powered Expense Assistant (Demo)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .demo-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .chat-container {
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.bot {
+            text-align: left;
+        }
+
+        .message.user {
+            text-align: right;
+        }
+
+        .message-bubble {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .message.bot .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .message.user .message-bubble {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .chat-input:focus {
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .upload-section {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .expenses-container {
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .expenses-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .expenses-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .summary-total {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .category-breakdown {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .category-item {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .expenses-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .expense-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .expense-item:hover {
+            transform: translateX(5px);
+            background: #e9ecef;
+        }
+
+        .expense-info {
+            flex: 1;
+        }
+
+        .expense-merchant {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .expense-details {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+
+        .expense-amount {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+            margin-right: 15px;
+        }
+
+        .expense-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 0.8em;
+            border-radius: 15px;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .expense-item.editing {
+            background: #e7f3ff;
+            border: 2px solid #667eea;
+        }
+
+        .edit-field {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #667eea;
+            border-radius: 5px;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
+        .edit-field:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+
+        .edit-section {
+            margin-top: 10px;
+        }
+
+        .edit-label {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 0.85em;
+            margin-bottom: 3px;
+            display: block;
+        }
+
+        .save-indicator {
+            display: inline-block;
+            margin-left: 10px;
+            color: #28a745;
+            font-size: 0.9em;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+
+        .confirmation-panel {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .confirmation-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .extracted-data {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .data-row:last-child {
+            border-bottom: none;
+        }
+
+        .data-label {
+            font-weight: 600;
+            color: #6c757d;
+        }
+
+        .data-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .confirmation-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .processing-indicator {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .timestamp {
+            font-size: 0.75em;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .instructions {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .instructions h3 {
+            margin-bottom: 10px;
+        }
+
+        .instructions ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .instructions li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 ReceiptRocket</h1>
+            <p>AI-Powered Expense Assistant</p>
+            <span class="demo-badge">📱 DEMO VERSION - No Installation Required</span>
+        </div>
+
+        <div class="main-content">
+            <!-- Chat Interface -->
+            <div class="card">
+                <div class="chat-container">
+                    <div class="chat-header">💬 Chat with BOB</div>
+                    <div class="messages" id="messages"></div>
+                    <div class="chat-input-area">
+                        <input 
+                            type="text" 
+                            class="chat-input" 
+                            id="chatInput" 
+                            placeholder="Type a message or upload a receipt..."
+                            onkeypress="handleKeyPress(event)"
+                        >
+                        <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+                    </div>
+                    <div class="upload-section">
+                        <input type="file" id="fileInput" class="file-input" accept="image/*" onchange="handleFileUpload(event)">
+                        <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
+                            📸 Upload Receipt
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expenses Dashboard -->
+            <div class="card">
+                <div class="expenses-container">
+                    <div class="expenses-header">
+                        <div class="expenses-title">📊 Expense Dashboard</div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="summary-total" id="totalAmount">$0.00</div>
+                        <div>Total Expenses</div>
+                        <div class="category-breakdown" id="categoryBreakdown"></div>
+                    </div>
+
+                    <div class="expenses-list" id="expensesList">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📭</div>
+                            <div>No expenses yet</div>
+                            <div style="font-size: 0.9em; margin-top: 10px;">Upload a receipt to get started!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>🎯 How to Use This Demo</h3>
+            <ul>
+                <li>✅ Click "Upload Receipt" to simulate OCR processing</li>
+                <li>✅ Type messages like "hello", "help", or "status"</li>
+                <li>✅ Confirm extracted data to add expenses</li>
+                <li>✅ View, edit, or delete expenses in the dashboard</li>
+                <li>✅ All data is simulated - no backend required!</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Sample receipt data for simulation
+        const sampleReceipts = [
+            {
+                merchant: "Starbucks Coffee",
+                date: "2026-05-18",
+                amount: 15.75,
+                category: "Food & Dining",
+                items: ["Grande Latte", "Blueberry Muffin"]
+            },
+            {
+                merchant: "Uber",
+                date: "2026-05-17",
+                amount: 28.50,
+                category: "Transportation",
+                items: ["Ride to Office"]
+            },
+            {
+                merchant: "Office Depot",
+                date: "2026-05-16",
+                amount: 45.99,
+                category: "Office Supplies",
+                items: ["Printer Paper", "Pens", "Notebooks"]
+            },
+            {
+                merchant: "Chipotle Mexican Grill",
+                date: "2026-05-15",
+                amount: 12.50,
+                category: "Food & Dining",
+                items: ["Burrito Bowl", "Chips & Guac"]
+            },
+            {
+                merchant: "Shell Gas Station",
+                date: "2026-05-14",
+                amount: 52.00,
+                category: "Transportation",
+                items: ["Fuel"]
+            }
+        ];
+
+        let expenses = [];
+        let currentReceiptData = null;
+        let isProcessing = false;
+        let editingExpenseId = null;
+
+        // LocalStorage functions
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('receiptRocketExpenses', JSON.stringify(expenses));
+                return true;
+            } catch (e) {
+                console.error('Error saving to localStorage:', e);
+                return false;
+            }
+        }
+
+        function loadFromLocalStorage() {
+            try {
+                const saved = localStorage.getItem('receiptRocketExpenses');
+                if (saved) {
+                    expenses = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.error('Error loading from localStorage:', e);
+            }
+        }
+
+        // Initialize
+        window.onload = function() {
+            loadFromLocalStorage();
+            addBotMessage("🚀 Welcome to ReceiptRocket!\n\nI'm your AI-powered expense assistant. Just upload a receipt photo and I'll extract all the details automatically!\n\nTry typing 'help' or click 'Upload Receipt' to get started.");
+            updateDashboard();
+        };
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addUserMessage(message);
+            input.value = '';
+            
+            setTimeout(() => {
+                handleBotResponse(message.toLowerCase());
+            }, 500);
+        }
+
+        function handleBotResponse(message) {
+            if (message.includes('hello') || message.includes('hi')) {
+                addBotMessage("Hello! 👋 I'm BOB, your expense assistant. Upload a receipt to get started, or type 'help' for more options.");
+            } else if (message.includes('help')) {
+                addBotMessage("Here's what I can do:\n\n📸 Upload Receipt - Process expense photos\n📊 Status - View your expenses\n💡 Summary - See spending breakdown\n\nJust click 'Upload Receipt' or type your question!");
+            } else if (message.includes('status') || message.includes('summary')) {
+                const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+                const count = expenses.length;
+                addBotMessage(`📊 Expense Summary:\n\nTotal Expenses: $${total.toFixed(2)}\nNumber of Receipts: ${count}\n\nCheck the dashboard on the right for details!`);
+            } else {
+                addBotMessage("I understand you're asking about: \"" + message + "\"\n\nI can help you with expense tracking! Try uploading a receipt or type 'help' for more options.");
+            }
+        }
+
+        function handleFileUpload(event) {
+            if (isProcessing) return;
+            
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            addUserMessage("📸 [Receipt Photo Uploaded: " + file.name + "]");
+            addBotMessage("⏳ Processing your receipt... This will take a few seconds.");
+            
+            isProcessing = true;
+            
+            // Simulate OCR processing
+            setTimeout(() => {
+                const receipt = sampleReceipts[Math.floor(Math.random() * sampleReceipts.length)];
+                currentReceiptData = {
+                    ...receipt,
+                    id: Date.now(),
+                    date: new Date().toISOString().split('T')[0]
+                };
+                
+                showConfirmation(currentReceiptData);
+                isProcessing = false;
+            }, 3000);
+            
+            // Reset file input
+            event.target.value = '';
+        }
+
+        function showConfirmation(data) {
+            const confirmationHTML = `
+                <div class="confirmation-panel" id="confirmation-panel">
+                    <div class="confirmation-title">✅ Receipt Data Extracted!</div>
+                    <div class="extracted-data" id="extracted-data-view">
+                        <div class="data-row">
+                            <span class="data-label">Merchant:</span>
+                            <span class="data-value" id="view-merchant">${data.merchant}</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Date:</span>
+                            <span class="data-value" id="view-date">${data.date}</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Amount:</span>
+                            <span class="data-value" id="view-amount">$${data.amount.toFixed(2)}</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Category:</span>
+                            <span class="data-value" id="view-category">${data.category}</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Items:</span>
+                            <span class="data-value" id="view-items">${data.items.join(', ')}</span>
+                        </div>
+                    </div>
+                    <div class="extracted-data" id="extracted-data-edit" style="display: none;">
+                        <div class="edit-section">
+                            <label class="edit-label">Merchant Name</label>
+                            <input type="text" id="edit-conf-merchant" class="edit-field" value="${data.merchant}" placeholder="Enter merchant name">
+                        </div>
+                        <div class="edit-section">
+                            <label class="edit-label">Date</label>
+                            <input type="date" id="edit-conf-date" class="edit-field" value="${data.date}">
+                        </div>
+                        <div class="edit-section">
+                            <label class="edit-label">Amount ($)</label>
+                            <input type="number" id="edit-conf-amount" class="edit-field" value="${data.amount}" step="0.01" min="0" placeholder="0.00">
+                        </div>
+                        <div class="edit-section">
+                            <label class="edit-label">Category</label>
+                            <input type="text" id="edit-conf-category" class="edit-field" value="${data.category}" placeholder="e.g., Food & Dining">
+                        </div>
+                        <div class="edit-section">
+                            <label class="edit-label">Items (comma-separated)</label>
+                            <input type="text" id="edit-conf-items" class="edit-field" value="${data.items.join(', ')}" placeholder="Item 1, Item 2, Item 3">
+                        </div>
+                        <div id="edit-conf-error"></div>
+                    </div>
+                    <div class="confirmation-actions" id="view-actions">
+                        <button class="btn btn-success" onclick="confirmExpense()">✅ Yes, Submit</button>
+                        <button class="btn btn-warning" onclick="toggleEditMode()">✏️ Edit Details</button>
+                        <button class="btn btn-danger" onclick="cancelExpense()">❌ Cancel</button>
+                    </div>
+                    <div class="confirmation-actions" id="edit-actions" style="display: none;">
+                        <button class="btn btn-success" onclick="saveConfirmationEdit()">💾 Save Changes</button>
+                        <button class="btn btn-secondary" onclick="toggleEditMode()">❌ Cancel Edit</button>
+                    </div>
+                </div>
+            `;
+            
+            addBotMessage(confirmationHTML, true);
+        }
+
+        function toggleEditMode() {
+            const viewData = document.getElementById('extracted-data-view');
+            const editData = document.getElementById('extracted-data-edit');
+            const viewActions = document.getElementById('view-actions');
+            const editActions = document.getElementById('edit-actions');
+            
+            if (viewData && editData && viewActions && editActions) {
+                const isEditing = editData.style.display !== 'none';
+                
+                if (isEditing) {
+                    // Switch back to view mode
+                    viewData.style.display = 'block';
+                    editData.style.display = 'none';
+                    viewActions.style.display = 'flex';
+                    editActions.style.display = 'none';
+                    document.getElementById('edit-conf-error').innerHTML = '';
+                } else {
+                    // Switch to edit mode
+                    viewData.style.display = 'none';
+                    editData.style.display = 'block';
+                    viewActions.style.display = 'none';
+                    editActions.style.display = 'flex';
+                }
+            }
+        }
+
+        function saveConfirmationEdit() {
+            if (!currentReceiptData) return;
+            
+            // Get values from input fields
+            const merchant = document.getElementById('edit-conf-merchant').value.trim();
+            const date = document.getElementById('edit-conf-date').value.trim();
+            const amountStr = document.getElementById('edit-conf-amount').value.trim();
+            const category = document.getElementById('edit-conf-category').value.trim();
+            const itemsStr = document.getElementById('edit-conf-items').value.trim();
+            
+            // Validation
+            const errors = [];
+            if (!merchant) errors.push('Merchant name is required');
+            if (!date) {
+                errors.push('Date is required');
+            } else {
+                const dateValidation = validateDate(date);
+                if (!dateValidation.valid) {
+                    errors.push(dateValidation.error);
+                }
+            }
+            if (!amountStr || isNaN(parseFloat(amountStr)) || parseFloat(amountStr) <= 0) {
+                errors.push('Valid amount is required');
+            }
+            if (!category) errors.push('Category is required');
+            if (!itemsStr) errors.push('At least one item is required');
+            
+            // Show errors if any
+            const errorDiv = document.getElementById('edit-conf-error');
+            if (errors.length > 0) {
+                errorDiv.innerHTML = errors.map(err => `<div class="error-message">❌ ${err}</div>`).join('');
+                return;
+            }
+            
+            // Parse and update current receipt data
+            const amount = parseFloat(amountStr);
+            const items = itemsStr.split(',').map(item => item.trim()).filter(item => item);
+            
+            currentReceiptData = {
+                ...currentReceiptData,
+                merchant,
+                date,
+                amount,
+                category,
+                items
+            };
+            
+            // Update view
+            document.getElementById('view-merchant').textContent = merchant;
+            document.getElementById('view-date').textContent = date;
+            document.getElementById('view-amount').textContent = `$${amount.toFixed(2)}`;
+            document.getElementById('view-category').textContent = category;
+            document.getElementById('view-items').textContent = items.join(', ');
+            
+            // Switch back to view mode
+            toggleEditMode();
+            
+            addBotMessage(`✅ Changes saved! Review the updated data and click "Yes, Submit" when ready.`);
+        }
+
+        function confirmExpense() {
+            if (!currentReceiptData) return;
+            
+            expenses.push(currentReceiptData);
+            saveToLocalStorage();
+            addBotMessage(`✅ Expense submitted successfully!\n\nExpense ID: #${currentReceiptData.id}\nAmount: $${currentReceiptData.amount.toFixed(2)}\n\nYour expense has been added to the dashboard.`);
+            
+            currentReceiptData = null;
+            updateDashboard();
+        }
+
+        function cancelExpense() {
+            addBotMessage("❌ Receipt cancelled. Feel free to upload another one!");
+            currentReceiptData = null;
+        }
+
+        function startEditExpense(id) {
+            editingExpenseId = id;
+            updateDashboard();
+        }
+
+        function validateDate(dateStr) {
+            const selectedDate = new Date(dateStr);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const sevenDaysAgo = new Date(today);
+            sevenDaysAgo.setDate(today.getDate() - 7);
+            
+            selectedDate.setHours(0, 0, 0, 0);
+            
+            if (selectedDate > today) {
+                return { valid: false, error: 'Date cannot be in the future' };
+            }
+            
+            if (selectedDate < sevenDaysAgo) {
+                return { valid: false, error: 'Date cannot be more than 7 days in the past' };
+            }
+            
+            return { valid: true };
+        }
+
+        function saveEditedExpense(id) {
+            const expenseIndex = expenses.findIndex(exp => exp.id === id);
+            if (expenseIndex === -1) return;
+
+            // Get values from input fields
+            const merchant = document.getElementById(`edit-merchant-${id}`).value.trim();
+            const date = document.getElementById(`edit-date-${id}`).value.trim();
+            const amountStr = document.getElementById(`edit-amount-${id}`).value.trim();
+            const category = document.getElementById(`edit-category-${id}`).value.trim();
+            const itemsStr = document.getElementById(`edit-items-${id}`).value.trim();
+
+            // Validation
+            const errors = [];
+            if (!merchant) errors.push('Merchant name is required');
+            if (!date) {
+                errors.push('Date is required');
+            } else {
+                const dateValidation = validateDate(date);
+                if (!dateValidation.valid) {
+                    errors.push(dateValidation.error);
+                }
+            }
+            if (!amountStr || isNaN(parseFloat(amountStr)) || parseFloat(amountStr) <= 0) {
+                errors.push('Valid amount is required');
+            }
+            if (!category) errors.push('Category is required');
+            if (!itemsStr) errors.push('At least one item is required');
+
+            // Show errors if any
+            const errorDiv = document.getElementById(`error-${id}`);
+            if (errors.length > 0) {
+                errorDiv.innerHTML = errors.map(err => `<div class="error-message">❌ ${err}</div>`).join('');
+                return;
+            }
+
+            // Parse and update expense
+            const amount = parseFloat(amountStr);
+            const items = itemsStr.split(',').map(item => item.trim()).filter(item => item);
+
+            expenses[expenseIndex] = {
+                ...expenses[expenseIndex],
+                merchant,
+                date,
+                amount,
+                category,
+                items
+            };
+
+            // Save to localStorage
+            if (saveToLocalStorage()) {
+                // Show success indicator
+                const saveIndicator = document.getElementById(`save-indicator-${id}`);
+                if (saveIndicator) {
+                    saveIndicator.style.display = 'inline-block';
+                    setTimeout(() => {
+                        saveIndicator.style.display = 'none';
+                    }, 2000);
+                }
+
+                addBotMessage(`✅ Expense #${id} updated successfully!\n\nMerchant: ${merchant}\nAmount: $${amount.toFixed(2)}`);
+                
+                editingExpenseId = null;
+                updateDashboard();
+            } else {
+                errorDiv.innerHTML = '<div class="error-message">❌ Failed to save changes</div>';
+            }
+        }
+
+        function cancelEdit() {
+            editingExpenseId = null;
+            updateDashboard();
+        }
+
+        function deleteExpense(id) {
+            if (confirm('Are you sure you want to delete this expense?')) {
+                expenses = expenses.filter(exp => exp.id !== id);
+                saveToLocalStorage();
+                addBotMessage(`🗑️ Expense #${id} has been deleted.`);
+                updateDashboard();
+            }
+        }
+
+        function updateDashboard() {
+            // Update total
+            const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+            document.getElementById('totalAmount').textContent = `$${total.toFixed(2)}`;
+            
+            // Update category breakdown
+            const categories = {};
+            expenses.forEach(exp => {
+                categories[exp.category] = (categories[exp.category] || 0) + exp.amount;
+            });
+            
+            const categoryHTML = Object.entries(categories)
+                .map(([cat, amount]) => `<div class="category-item">${cat}: $${amount.toFixed(2)}</div>`)
+                .join('');
+            document.getElementById('categoryBreakdown').innerHTML = categoryHTML || '<div class="category-item">No categories yet</div>';
+            
+            // Update expenses list
+            const expensesList = document.getElementById('expensesList');
+            
+            if (expenses.length === 0) {
+                expensesList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <div>No expenses yet</div>
+                        <div style="font-size: 0.9em; margin-top: 10px;">Upload a receipt to get started!</div>
+                    </div>
+                `;
+            } else {
+                const expensesHTML = expenses.map(exp => {
+                    const isEditing = editingExpenseId === exp.id;
+                    
+                    if (isEditing) {
+                        return `
+                            <div class="expense-item editing" id="expense-${exp.id}">
+                                <div class="expense-info" style="flex: 1;">
+                                    <div class="edit-section">
+                                        <label class="edit-label">Merchant Name</label>
+                                        <input type="text" id="edit-merchant-${exp.id}" class="edit-field" value="${exp.merchant}" placeholder="Enter merchant name">
+                                    </div>
+                                    <div class="edit-section">
+                                        <label class="edit-label">Date</label>
+                                        <input type="date" id="edit-date-${exp.id}" class="edit-field" value="${exp.date}">
+                                    </div>
+                                    <div class="edit-section">
+                                        <label class="edit-label">Amount ($)</label>
+                                        <input type="number" id="edit-amount-${exp.id}" class="edit-field" value="${exp.amount}" step="0.01" min="0" placeholder="0.00">
+                                    </div>
+                                    <div class="edit-section">
+                                        <label class="edit-label">Category</label>
+                                        <input type="text" id="edit-category-${exp.id}" class="edit-field" value="${exp.category}" placeholder="e.g., Food & Dining">
+                                    </div>
+                                    <div class="edit-section">
+                                        <label class="edit-label">Items (comma-separated)</label>
+                                        <input type="text" id="edit-items-${exp.id}" class="edit-field" value="${exp.items.join(', ')}" placeholder="Item 1, Item 2, Item 3">
+                                    </div>
+                                    <div id="error-${exp.id}"></div>
+                                </div>
+                                <div class="expense-actions" style="flex-direction: column; gap: 5px;">
+                                    <button class="btn btn-success btn-small" onclick="saveEditedExpense(${exp.id})">
+                                        💾 Save
+                                    </button>
+                                    <button class="btn btn-secondary btn-small" onclick="cancelEdit()">
+                                        ❌ Cancel
+                                    </button>
+                                    <span id="save-indicator-${exp.id}" class="save-indicator" style="display: none;">✅ Saved!</span>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="expense-item" id="expense-${exp.id}">
+                                <div class="expense-info">
+                                    <div class="expense-merchant">${exp.merchant}</div>
+                                    <div class="expense-details">
+                                        ${exp.date} • ${exp.category}<br>
+                                        ${exp.items.join(', ')}
+                                    </div>
+                                </div>
+                                <div class="expense-amount">$${exp.amount.toFixed(2)}</div>
+                                <div class="expense-actions">
+                                    <button class="btn btn-info btn-small" onclick="startEditExpense(${exp.id})" title="Edit expense">
+                                        ✏️
+                                    </button>
+                                    <button class="btn btn-danger btn-small" onclick="deleteExpense(${exp.id})" title="Delete expense">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }).join('');
+                
+                expensesList.innerHTML = expensesHTML;
+            }
+            
+            // Save to localStorage after any update
+            saveToLocalStorage();
+        }
+
+        function addUserMessage(text) {
+            addMessage('user', text);
+        }
+
+        function addBotMessage(text, isHTML = false) {
+            addMessage('bot', text, isHTML);
+        }
+
+        function addMessage(type, content, isHTML = false) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            
+            if (isHTML) {
+                messageDiv.innerHTML = content;
+            } else {
+                const bubble = document.createElement('div');
+                bubble.className = 'message-bubble';
+                bubble.textContent = content;
+                
+                const time = document.createElement('div');
+                time.className = 'timestamp';
+                time.textContent = timestamp;
+                
+                messageDiv.appendChild(bubble);
+                if (type === 'bot') {
+                    messageDiv.appendChild(time);
+                }
+            }
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    </script>
+</body>
+</html>
