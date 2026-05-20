@@ -177,6 +177,25 @@
             color: white;
         }
 
+        .btn-upload {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-upload:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(118, 75, 162, 0.5);
+        }
+
+        .btn-upload:disabled {
+            background: #6c757d;
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
         .btn-success {
             background: #28a745;
             color: white;
@@ -497,7 +516,7 @@
                     </div>
                     <div class="upload-section">
                         <input type="file" id="fileInput" class="file-input" accept="image/*" onchange="handleFileUpload(event)">
-                        <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
+                        <button class="btn btn-upload" id="uploadButton" onclick="handleUploadClick()">
                             📸 Upload Receipt
                         </button>
                     </div>
@@ -584,6 +603,14 @@
         let currentReceiptData = null;
         let isProcessing = false;
         let editingExpenseId = null;
+        let confirmationPanelElement = null;
+
+        function hideConfirmationPanel() {
+            if (confirmationPanelElement) {
+                confirmationPanelElement.style.display = 'none';
+                confirmationPanelElement = null;
+            }
+        }
 
         // LocalStorage functions
         function saveToLocalStorage() {
@@ -605,6 +632,14 @@
             } catch (e) {
                 console.error('Error loading from localStorage:', e);
             }
+        }
+
+        function handleUploadClick() {
+            if (isProcessing) {
+                addBotMessage("⏳ Please wait, I'm still processing the previous receipt...");
+                return;
+            }
+            document.getElementById('fileInput').click();
         }
 
         // Initialize
@@ -709,7 +744,7 @@
                         </div>
                         <div class="edit-section">
                             <label class="edit-label">Date</label>
-                            <input type="date" id="edit-conf-date" class="edit-field" value="${data.date}">
+                            <input type="date" id="edit-conf-date" class="edit-field" value="${data.date}" max="${new Date().toISOString().split('T')[0]}" min="${new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}">
                         </div>
                         <div class="edit-section">
                             <label class="edit-label">Amount ($)</label>
@@ -738,6 +773,11 @@
             `;
             
             addBotMessage(confirmationHTML, true);
+            
+            // Store reference to confirmation panel for hiding later
+            setTimeout(() => {
+                confirmationPanelElement = document.getElementById('confirmation-panel');
+            }, 100);
         }
 
         function toggleEditMode() {
@@ -829,6 +869,8 @@
         function confirmExpense() {
             if (!currentReceiptData) return;
             
+            hideConfirmationPanel();
+            
             expenses.push(currentReceiptData);
             saveToLocalStorage();
             addBotMessage(`✅ Expense submitted successfully!\n\nExpense ID: #${currentReceiptData.id}\nAmount: $${currentReceiptData.amount.toFixed(2)}\n\nYour expense has been added to the dashboard.`);
@@ -838,6 +880,7 @@
         }
 
         function cancelExpense() {
+            hideConfirmationPanel();
             addBotMessage("❌ Receipt cancelled. Feel free to upload another one!");
             currentReceiptData = null;
         }
@@ -991,7 +1034,7 @@
                                     </div>
                                     <div class="edit-section">
                                         <label class="edit-label">Date</label>
-                                        <input type="date" id="edit-date-${exp.id}" class="edit-field" value="${exp.date}">
+                                        <input type="date" id="edit-date-${exp.id}" class="edit-field" value="${exp.date}" max="${new Date().toISOString().split('T')[0]}" min="${new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}">
                                     </div>
                                     <div class="edit-section">
                                         <label class="edit-label">Amount ($)</label>
