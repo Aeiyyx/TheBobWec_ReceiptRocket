@@ -1,0 +1,283 @@
+================================================================================
+  RECEIPTBOT - SETUP INSTRUCTIONS FOR BOB-A-THON31
+================================================================================
+
+📋 PREREQUISITES CHECKLIST
+--------------------------
+Before starting, make sure you have:
+
+□ Python 3.8 or higher installed
+  Check: python --version
+
+□ Node.js 16 or higher installed
+  Check: node --version
+  Check: npm --version
+
+□ Tesseract OCR installed
+  Windows: Download from https://github.com/UB-Mannheim/tesseract/wiki
+  Mac: brew install tesseract
+  Linux: sudo apt-get install tesseract-ocr
+  Check: tesseract --version
+
+
+================================================================================
+  STEP-BY-STEP SETUP
+================================================================================
+
+STEP 1: BACKEND SETUP
+----------------------
+
+1. Open Terminal/Command Prompt
+
+2. Navigate to backend folder:
+   cd Desktop/receiptbot-bobathon/backend
+
+3. Create virtual environment (recommended):
+   python -m venv venv
+
+4. Activate virtual environment:
+   
+   Windows:
+   venv\Scripts\activate
+   
+   Mac/Linux:
+   source venv/bin/activate
+
+5. Install Python dependencies:
+   pip install -r requirements.txt
+
+6. Configure Tesseract (Windows only):
+   - Open backend/app.py in a text editor
+   - Find line 12 (around line 12)
+   - Uncomment and update the path:
+     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+   - Adjust path if you installed Tesseract elsewhere
+
+7. Start the backend server:
+   python app.py
+
+   ✅ You should see:
+   🚀 ReceiptBot Backend Starting...
+   📸 OCR Ready - Send receipt photos!
+   🤖 BOB Integration Active
+   ⚙️  ICA Workflows Enabled
+   * Running on http://127.0.0.1:5000
+
+   ⚠️ Keep this terminal window open!
+
+
+STEP 2: FRONTEND SETUP
+-----------------------
+
+1. Open a NEW Terminal/Command Prompt window
+
+2. Navigate to frontend folder:
+   cd Desktop/receiptbot-bobathon/frontend
+
+3. Install Node dependencies:
+   npm install
+
+   (This may take 2-3 minutes)
+
+4. Start the frontend server:
+   npm start
+
+   ✅ You should see:
+   Compiled successfully!
+   
+   You can now view receiptbot-frontend in the browser.
+   
+   Local:            http://localhost:3000
+   On Your Network:  http://192.168.x.x:3000
+
+   ⚠️ Keep this terminal window open too!
+
+5. Browser should automatically open to http://localhost:3000
+
+
+================================================================================
+  VERIFICATION
+================================================================================
+
+✅ BACKEND RUNNING: http://localhost:5000
+   - Terminal shows Flask server messages
+   - No error messages
+
+✅ FRONTEND RUNNING: http://localhost:3000
+   - Browser shows ReceiptRocket interface
+   - Chat interface visible
+   - "Upload Receipt" button present
+
+✅ BOTH CONNECTED:
+   - Type "hello" in chat
+   - BOB should respond
+   - No CORS errors in browser console (F12)
+
+
+================================================================================
+  TESTING THE APP
+================================================================================
+
+1. PREPARE TEST RECEIPTS
+   - Find 2-3 clear receipt photos
+   - Or search Google Images for "restaurant receipt"
+   - Save to your computer
+
+2. TEST UPLOAD
+   - Click "📸 Upload Receipt" button
+   - Select a receipt photo
+   - Wait 3-5 seconds
+
+3. VERIFY OCR
+   - BOB should show extracted data:
+     • Amount
+     • Date
+     • Merchant
+     • Category
+
+4. SUBMIT EXPENSE
+   - Click "✅ Yes, Submit"
+   - BOB confirms with expense ID
+
+5. VIEW DASHBOARD
+   - Type "status" in chat
+   - Expense panel should appear
+   - Shows your submitted expense
+
+
+================================================================================
+  TROUBLESHOOTING
+================================================================================
+
+PROBLEM: "ModuleNotFoundError: No module named 'flask'"
+SOLUTION: 
+  cd backend
+  pip install -r requirements.txt
+
+PROBLEM: "TesseractNotFoundError"
+SOLUTION:
+  1. Install Tesseract OCR
+  2. Update path in backend/app.py line 12
+
+PROBLEM: "Port 5000 already in use"
+SOLUTION:
+  1. Close other applications using port 5000
+  2. Or change port in backend/app.py line 283:
+     app.run(debug=True, port=5001)
+
+PROBLEM: "npm install" fails
+SOLUTION:
+  npm cache clean --force
+  npm install
+
+PROBLEM: Frontend shows blank page
+SOLUTION:
+  1. Check browser console (F12) for errors
+  2. Ensure backend is running on port 5000
+  3. Clear browser cache (Ctrl+Shift+Delete)
+
+PROBLEM: OCR not extracting data
+SOLUTION:
+  1. Use clearer receipt photos
+  2. Ensure good lighting
+  3. Avoid blurry or crumpled receipts
+  4. Check Tesseract is installed: tesseract --version
+
+PROBLEM: CORS errors in browser
+SOLUTION:
+  1. Ensure backend is running
+  2. Check proxy setting in frontend/package.json
+  3. Restart both servers
+
+
+================================================================================
+  DEMO DAY PREPARATION
+================================================================================
+
+1 DAY BEFORE:
+□ Test complete flow 3 times
+□ Prepare 3-4 test receipts
+□ Practice demo script
+□ Charge laptop fully
+□ Record backup demo video
+
+DEMO DAY MORNING:
+□ Start backend server
+□ Start frontend server
+□ Test one receipt upload
+□ Clear browser cache
+□ Close unnecessary tabs
+□ Have backup materials ready
+
+DURING DEMO:
+□ Stay calm and confident
+□ Explain problem clearly
+□ Show working demo
+□ Highlight BOB + ICA integration
+□ Mention business value
+□ Answer questions confidently
+
+
+================================================================================
+  QUICK REFERENCE
+================================================================================
+
+START BACKEND:
+  cd Desktop/receiptbot-bobathon/backend
+  venv\Scripts\activate  (Windows)
+  python app.py
+
+START FRONTEND:
+  cd Desktop/receiptbot-bobathon/frontend
+  npm start
+
+STOP SERVERS:
+  Press Ctrl+C in each terminal
+
+RESTART SERVERS:
+  Stop both, then start again
+
+VIEW LOGS:
+  Backend: Check terminal where python app.py is running
+  Frontend: Check browser console (F12)
+
+
+================================================================================
+  IMPORTANT NOTES
+================================================================================
+
+⚠️ ALWAYS run backend BEFORE frontend
+⚠️ Keep BOTH terminal windows open while using the app
+⚠️ Don't close browser tab while testing
+⚠️ Use CLEAR, WELL-LIT receipt photos for best OCR results
+⚠️ Test with MULTIPLE receipts before demo day
+⚠️ Have BACKUP demo video ready
+
+
+================================================================================
+  NEED HELP?
+================================================================================
+
+1. Check README.md for detailed documentation
+2. Check QUICKSTART.md for quick setup guide
+3. Check PROJECT_SUMMARY.md for project overview
+4. Review error messages in terminal
+5. Check browser console (F12) for frontend errors
+
+
+================================================================================
+  YOU'RE READY! 🚀
+================================================================================
+
+Everything is set up and ready for Bob-a-thon31!
+
+Next steps:
+1. Follow setup instructions above
+2. Test the complete flow
+3. Practice your demo
+4. Prepare backup materials
+5. Get ready to impress the judges!
+
+Good luck! 🎉
+
+================================================================================
