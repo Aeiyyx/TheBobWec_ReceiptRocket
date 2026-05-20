@@ -560,40 +560,48 @@
     </div>
 
     <script>
-        // Sample receipt data for simulation
+        // Currency formatting function for Philippine Peso
+        function formatPHP(amount) {
+            return '₱' + amount.toLocaleString('en-PH', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Sample receipt data for simulation (amounts in PHP)
         const sampleReceipts = [
             {
                 merchant: "Starbucks Coffee",
                 date: "2026-05-18",
-                amount: 15.75,
+                amount: 875.00,
                 category: "Food & Dining",
                 items: ["Grande Latte", "Blueberry Muffin"]
             },
             {
-                merchant: "Uber",
+                merchant: "Grab",
                 date: "2026-05-17",
-                amount: 28.50,
+                amount: 1580.00,
                 category: "Transportation",
                 items: ["Ride to Office"]
             },
             {
-                merchant: "Office Depot",
+                merchant: "National Bookstore",
                 date: "2026-05-16",
-                amount: 45.99,
+                amount: 2550.00,
                 category: "Office Supplies",
                 items: ["Printer Paper", "Pens", "Notebooks"]
             },
             {
-                merchant: "Chipotle Mexican Grill",
+                merchant: "Jollibee",
                 date: "2026-05-15",
-                amount: 12.50,
+                amount: 695.00,
                 category: "Food & Dining",
-                items: ["Burrito Bowl", "Chips & Guac"]
+                items: ["Chickenjoy Meal", "Palabok"]
             },
             {
-                merchant: "Shell Gas Station",
+                merchant: "Petron Gas Station",
                 date: "2026-05-14",
-                amount: 52.00,
+                amount: 2880.00,
                 category: "Transportation",
                 items: ["Fuel"]
             }
@@ -709,7 +717,7 @@
             } else if (message.includes('status') || message.includes('summary')) {
                 const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
                 const count = expenses.length;
-                addBotMessage(`📊 Expense Summary:\n\nTotal Expenses: $${total.toFixed(2)}\nNumber of Receipts: ${count}\n\nCheck the dashboard on the right for details!`);
+                addBotMessage(`📊 Expense Summary:\n\nTotal Expenses: ${formatPHP(total)}\nNumber of Receipts: ${count}\n\nCheck the dashboard on the right for details!`);
             } else {
                 addBotMessage("I understand you're asking about: \"" + message + "\"\n\nI can help you with expense tracking! Try uploading a receipt or type 'help' for more options.");
             }
@@ -770,7 +778,7 @@
                         </div>
                         <div class="data-row">
                             <span class="data-label">Amount:</span>
-                            <span class="data-value" id="view-amount">$${data.amount.toFixed(2)}</span>
+                            <span class="data-value" id="view-amount">${formatPHP(data.amount)}</span>
                         </div>
                         <div class="data-row">
                             <span class="data-label">Category:</span>
@@ -791,8 +799,8 @@
                             <input type="date" id="edit-conf-date" class="edit-field" value="${data.date}" max="${phToday}" min="${phSevenDaysAgo}">
                         </div>
                         <div class="edit-section">
-                            <label class="edit-label">Amount ($)</label>
-                            <input type="number" id="edit-conf-amount" class="edit-field" value="${data.amount}" step="0.01" min="0" placeholder="0.00">
+                            <label class="edit-label">Amount (₱)</label>
+                            <input type="number" id="edit-conf-amount" class="edit-field" value="${data.amount}" step="any" min="0" placeholder="0.00">
                         </div>
                         <div class="edit-section">
                             <label class="edit-label">Category</label>
@@ -884,8 +892,8 @@
                 return;
             }
             
-            // Parse and update current receipt data
-            const amount = parseFloat(amountStr);
+            // Parse and update current receipt data with proper rounding
+            const amount = Math.round(parseFloat(amountStr) * 100) / 100;
             const items = itemsStr.split(',').map(item => item.trim()).filter(item => item);
             
             currentReceiptData = {
@@ -900,7 +908,7 @@
             // Update view
             document.getElementById('view-merchant').textContent = merchant;
             document.getElementById('view-date').textContent = date;
-            document.getElementById('view-amount').textContent = `$${amount.toFixed(2)}`;
+            document.getElementById('view-amount').textContent = formatPHP(amount);
             document.getElementById('view-category').textContent = category;
             document.getElementById('view-items').textContent = items.join(', ');
             
@@ -917,7 +925,7 @@
             
             expenses.push(currentReceiptData);
             saveToLocalStorage();
-            addBotMessage(`✅ Expense submitted successfully!\n\nExpense ID: #${currentReceiptData.id}\nAmount: $${currentReceiptData.amount.toFixed(2)}\n\nYour expense has been added to the dashboard.`);
+            addBotMessage(`✅ Expense submitted successfully!\n\nExpense ID: #${currentReceiptData.id}\nAmount: ${formatPHP(currentReceiptData.amount)}\n\nYour expense has been added to the dashboard.`);
             
             currentReceiptData = null;
             updateUploadButtonState();
@@ -993,8 +1001,8 @@
                 return;
             }
 
-            // Parse and update expense
-            const amount = parseFloat(amountStr);
+            // Parse and update expense with proper rounding
+            const amount = Math.round(parseFloat(amountStr) * 100) / 100;
             const items = itemsStr.split(',').map(item => item.trim()).filter(item => item);
 
             expenses[expenseIndex] = {
@@ -1017,7 +1025,7 @@
                     }, 2000);
                 }
 
-                addBotMessage(`✅ Expense #${id} updated successfully!\n\nMerchant: ${merchant}\nAmount: $${amount.toFixed(2)}`);
+                addBotMessage(`✅ Expense #${id} updated successfully!\n\nMerchant: ${merchant}\nAmount: ${formatPHP(amount)}`);
                 
                 editingExpenseId = null;
                 updateDashboard();
@@ -1053,7 +1061,7 @@
             
             // Update total
             const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
-            document.getElementById('totalAmount').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('totalAmount').textContent = formatPHP(total);
             
             // Update category breakdown
             const categories = {};
@@ -1062,7 +1070,7 @@
             });
             
             const categoryHTML = Object.entries(categories)
-                .map(([cat, amount]) => `<div class="category-item">${cat}: $${amount.toFixed(2)}</div>`)
+                .map(([cat, amount]) => `<div class="category-item">${cat}: ${formatPHP(amount)}</div>`)
                 .join('');
             document.getElementById('categoryBreakdown').innerHTML = categoryHTML || '<div class="category-item">No categories yet</div>';
             
@@ -1094,8 +1102,8 @@
                                         <input type="date" id="edit-date-${exp.id}" class="edit-field" value="${exp.date}" max="${phToday}" min="${phSevenDaysAgo}">
                                     </div>
                                     <div class="edit-section">
-                                        <label class="edit-label">Amount ($)</label>
-                                        <input type="number" id="edit-amount-${exp.id}" class="edit-field" value="${exp.amount}" step="0.01" min="0" placeholder="0.00">
+                                        <label class="edit-label">Amount (₱)</label>
+                                        <input type="number" id="edit-amount-${exp.id}" class="edit-field" value="${exp.amount}" step="any" min="0" placeholder="0.00">
                                     </div>
                                     <div class="edit-section">
                                         <label class="edit-label">Category</label>
@@ -1128,7 +1136,7 @@
                                         ${exp.items.join(', ')}
                                     </div>
                                 </div>
-                                <div class="expense-amount">$${exp.amount.toFixed(2)}</div>
+                                <div class="expense-amount">${formatPHP(exp.amount)}</div>
                                 <div class="expense-actions">
                                     <button class="btn btn-info btn-small" onclick="startEditExpense(${exp.id})" title="Edit expense">
                                         ✏️
