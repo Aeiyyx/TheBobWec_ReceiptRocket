@@ -710,17 +710,412 @@
         }
 
         function handleBotResponse(message) {
-            if (message.includes('hello') || message.includes('hi')) {
-                addBotMessage("Hello! 👋 I'm BOB, your expense assistant. Upload a receipt to get started, or type 'help' for more options.");
-            } else if (message.includes('help')) {
-                addBotMessage("Here's what I can do:\n\n📸 Upload Receipt - Process expense photos\n📊 Status - View your expenses\n💡 Summary - See spending breakdown\n\nJust click 'Upload Receipt' or type your question!");
-            } else if (message.includes('status') || message.includes('summary')) {
-                const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
-                const count = expenses.length;
-                addBotMessage(`📊 Expense Summary:\n\nTotal Expenses: ${formatPHP(total)}\nNumber of Receipts: ${count}\n\nCheck the dashboard on the right for details!`);
-            } else {
-                addBotMessage("I understand you're asking about: \"" + message + "\"\n\nI can help you with expense tracking! Try uploading a receipt or type 'help' for more options.");
+            // Check if no expenses exist for queries that need data
+            const needsData = !message.includes('hello') && !message.includes('hi') && !message.includes('help');
+            if (needsData && expenses.length === 0) {
+                addBotMessage("📭 You don't have any expenses yet!\n\nUpload a receipt to get started, and then I can help you analyze your spending.");
+                return;
             }
+
+            // Greetings
+            if (message.includes('hello') || message.includes('hi')) {
+                addBotMessage("Hello! 👋 I'm BOB, your expense assistant. Upload a receipt to get started, or ask me about your expenses!");
+                return;
+            }
+
+            // Help
+            if (message.includes('help')) {
+                addBotMessage("Here's what I can do:\n\n📸 Upload Receipt - Process expense photos\n📊 Total/Summary - View total expenses\n🏪 Merchant queries - 'How much at [merchant]?'\n📁 Category queries - 'Show [category] expenses'\n📅 Date queries - 'Expenses from [date]'\n🔍 Item queries - 'What did I buy at [merchant]?'\n\nJust ask naturally!");
+                return;
+            }
+
+            // Total/Summary queries
+            if (message.includes('total') || message.includes('summary') || message.includes('status') || message.includes('how much') && message.includes('spent')) {
+                handleTotalQuery(message);
+                return;
+            }
+
+            // Merchant-specific queries
+            if (message.includes('at ') || message.includes('from ')) {
+                handleMerchantQuery(message);
+                return;
+            }
+
+            // Category queries
+            if (message.includes('category') || message.includes('food') || message.includes('transport') || message.includes('office')) {
+                handleCategoryQuery(message);
+                return;
+            }
+
+            // Date queries
+            if (message.includes('today') || message.includes('yesterday') || message.includes('week') || message.includes('month') || /\d{4}-\d{2}-\d{2}/.test(message)) {
+                handleDateQuery(message);
+                return;
+            }
+
+            // Item/purchase queries
+            if (message.includes('buy') || message.includes('bought') || message.includes('purchase') || message.includes('item')) {
+                handleItemQuery(message);
+                return;
+            }
+
+            // Show all expenses
+            if (message.includes('show') && (message.includes('all') || message.includes('expense'))) {
+                handleShowAllQuery();
+                return;
+            }
+
+            // Default response
+            addBotMessage("I'm not sure what you're asking. Try:\n\n• 'How much did I spend?'\n• 'Show expenses at Jollibee'\n• 'What are my food expenses?'\n• 'Show today's expenses'\n• Type 'help' for more options");
+        }
+
+        function handleTotalQuery(message) {
+            const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const count = expenses.length;
+            const avgExpense = total / count;
+
+            let response = `📊 Expense Summary:\n\n`;
+            response += `Total Spent: ${formatPHP(total)}\n`;
+            response += `Number of Receipts: ${count}\n`;
+            response += `Average per Receipt: ${formatPHP(avgExpense)}\n\n`;
+
+            // Category breakdown
+            const categories = {};
+            expenses.forEach(exp => {
+                categories[exp.category] = (categories[exp.category] || 0) + exp.amount;
+            });
+
+            response += `By Category:\n`;
+            Object.entries(categories)
+                .sort((a, b) => b[1] - a[1])
+                .forEach(([cat, amount]) => {
+                    const percentage = (amount / total * 100).toFixed(1);
+                    response += `• ${cat}: ${formatPHP(amount)} (${percentage}%)\n`;
+                });
+
+            addBotMessage(response);
+        }
+
+        function handleMerchantQuery(message) {
+            // Extract merchant name - improved regex to capture more patterns
+            const atMatch = message.match(/(?:at|@)\s+([a-z0-9\s]+?)(?:\?|$|,|\s+on|\s+from)/i);
+            const fromMatch = message.match(/from\s+([a-z0-9\s]+?)(?:\?|$|,|\s+on)/i);
+            let merchantQuery = (atMatch || fromMatch)?.[1]?.trim().toLowerCase();
+
+            if (!merchantQuery) {
+                addBotMessage("Please specify a merchant name. For example: 'How much did I spend at Jollibee?'");
+                return;
+            }
+
+            // Remove common words that might interfere
+            merchantQuery = merchantQuery.replace(/\b(the|a|an)\b/gi, '').trim();
+
+            // Find matching expenses with fuzzy matching
+            const matchingExpenses = expenses.filter(exp => {
+                const merchantLower = exp.merchant.toLowerCase();
+                // Check if merchant contains the query OR query contains merchant words
+                return merchantLower.includes(merchantQuery) ||
+                       merchantQuery.split(' ').some(word => word.length > 2 && merchantLower.includes(word));
+            });
+
+            if (matchingExpenses.length === 0) {
+                // Try to find similar merchants
+                const availableMerchants = [...new Set(expenses.map(e => e.merchant))];
+                const suggestions = availableMerchants.filter(m =>
+                    m.toLowerCase().includes(merchantQuery.split(' ')[0])
+                ).slice(0, 3);
+
+                let errorMsg = `❌ No expenses found for "${merchantQuery}".`;
+                if (suggestions.length > 0) {
+                    errorMsg += `\n\nDid you mean: ${suggestions.join(', ')}?`;
+                } else {
+                    errorMsg += `\n\nAvailable merchants:\n${availableMerchants.join(', ')}`;
+                }
+                addBotMessage(errorMsg);
+                return;
+            }
+
+            // Group by actual merchant name if multiple matches
+            const merchantGroups = {};
+            matchingExpenses.forEach(exp => {
+                if (!merchantGroups[exp.merchant]) {
+                    merchantGroups[exp.merchant] = [];
+                }
+                merchantGroups[exp.merchant].push(exp);
+            });
+
+            const total = matchingExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+            let response = `🏪 Expenses matching "${merchantQuery}":\n\n`;
+            response += `Total Spent: ${formatPHP(total)}\n`;
+            response += `Number of Transactions: ${matchingExpenses.length}\n\n`;
+
+            Object.entries(merchantGroups).forEach(([merchant, exps]) => {
+                response += `📍 ${merchant}:\n`;
+                exps.forEach(exp => {
+                    response += `  📅 ${exp.date}: ${formatPHP(exp.amount)}\n`;
+                    response += `     ${exp.items.join(', ')}\n`;
+                });
+                response += '\n';
+            });
+
+            addBotMessage(response);
+        }
+
+        function handleCategoryQuery(message) {
+            // Extract category
+            let categoryQuery = null;
+            if (message.includes('food')) categoryQuery = 'food';
+            else if (message.includes('transport')) categoryQuery = 'transport';
+            else if (message.includes('office')) categoryQuery = 'office';
+
+            const matchingExpenses = categoryQuery
+                ? expenses.filter(exp => exp.category.toLowerCase().includes(categoryQuery))
+                : expenses;
+
+            if (matchingExpenses.length === 0) {
+                addBotMessage(`❌ No expenses found in that category.\n\nAvailable categories:\n${[...new Set(expenses.map(e => e.category))].join(', ')}`);
+                return;
+            }
+
+            const total = matchingExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const category = matchingExpenses[0].category;
+
+            let response = `📁 ${category} Expenses:\n\n`;
+            response += `Total: ${formatPHP(total)}\n`;
+            response += `Count: ${matchingExpenses.length}\n\n`;
+
+            matchingExpenses.forEach(exp => {
+                response += `• ${exp.merchant} (${exp.date}): ${formatPHP(exp.amount)}\n`;
+            });
+
+            addBotMessage(response);
+        }
+
+        // Natural language date parser
+        function parseNaturalDate(message) {
+            const phDate = getPhilippinesDate();
+            const phToday = getPhilippinesDateString();
+            
+            // Month name mapping
+            const months = {
+                'january': 0, 'jan': 0,
+                'february': 1, 'feb': 1,
+                'march': 2, 'mar': 2,
+                'april': 3, 'apr': 3,
+                'may': 4,
+                'june': 5, 'jun': 5,
+                'july': 6, 'jul': 6,
+                'august': 7, 'aug': 7,
+                'september': 8, 'sep': 8, 'sept': 8,
+                'october': 9, 'oct': 9,
+                'november': 10, 'nov': 10,
+                'december': 11, 'dec': 11
+            };
+
+            const messageLower = message.toLowerCase();
+
+            // Relative dates
+            if (messageLower.includes('today')) {
+                return { type: 'single', date: phToday };
+            }
+            
+            if (messageLower.includes('yesterday')) {
+                const yesterday = new Date(phDate);
+                yesterday.setDate(yesterday.getDate() - 1);
+                return { type: 'single', date: yesterday.toISOString().split('T')[0] };
+            }
+
+            // "X days ago"
+            const daysAgoMatch = messageLower.match(/(\d+)\s+days?\s+ago/);
+            if (daysAgoMatch) {
+                const daysAgo = parseInt(daysAgoMatch[1]);
+                const targetDate = new Date(phDate);
+                targetDate.setDate(targetDate.getDate() - daysAgo);
+                return { type: 'single', date: targetDate.toISOString().split('T')[0] };
+            }
+
+            // "last week" / "past week"
+            if (messageLower.includes('last week') || messageLower.includes('past week')) {
+                const weekAgo = new Date(phDate);
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                return { type: 'range', start: weekAgo.toISOString().split('T')[0], end: phToday };
+            }
+
+            // "this week"
+            if (messageLower.includes('this week')) {
+                const weekStart = new Date(phDate);
+                weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+                return { type: 'range', start: weekStart.toISOString().split('T')[0], end: phToday };
+            }
+
+            // "this month" / "current month"
+            if (messageLower.includes('this month') || messageLower.includes('current month')) {
+                const monthStart = new Date(phDate.getFullYear(), phDate.getMonth(), 1);
+                return { type: 'range', start: monthStart.toISOString().split('T')[0], end: phToday };
+            }
+
+            // "last month"
+            if (messageLower.includes('last month')) {
+                const lastMonth = new Date(phDate.getFullYear(), phDate.getMonth() - 1, 1);
+                const lastMonthEnd = new Date(phDate.getFullYear(), phDate.getMonth(), 0);
+                return { type: 'range', start: lastMonth.toISOString().split('T')[0], end: lastMonthEnd.toISOString().split('T')[0] };
+            }
+
+            // Month name with optional day: "May 5", "January 15", "in May"
+            for (const [monthName, monthNum] of Object.entries(months)) {
+                const monthPattern = new RegExp(`\\b${monthName}\\s+(\\d{1,2})\\b`, 'i');
+                const monthMatch = messageLower.match(monthPattern);
+                
+                if (monthMatch) {
+                    const day = parseInt(monthMatch[1]);
+                    const year = phDate.getFullYear();
+                    const targetDate = new Date(year, monthNum, day);
+                    
+                    // If date is in future, use previous year
+                    if (targetDate > phDate) {
+                        targetDate.setFullYear(year - 1);
+                    }
+                    
+                    return { type: 'single', date: targetDate.toISOString().split('T')[0] };
+                }
+
+                // Just month name: "in January", "January expenses"
+                if (messageLower.includes(monthName)) {
+                    const year = phDate.getFullYear();
+                    const monthStart = new Date(year, monthNum, 1);
+                    const monthEnd = new Date(year, monthNum + 1, 0);
+                    
+                    // If month is in future, use previous year
+                    if (monthStart > phDate) {
+                        monthStart.setFullYear(year - 1);
+                        monthEnd.setFullYear(year - 1);
+                    }
+                    
+                    return { type: 'range', start: monthStart.toISOString().split('T')[0], end: monthEnd.toISOString().split('T')[0] };
+                }
+            }
+
+            // ISO format: YYYY-MM-DD
+            const isoMatch = messageLower.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+            if (isoMatch) {
+                const [, year, month, day] = isoMatch;
+                const dateStr = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                return { type: 'single', date: dateStr };
+            }
+
+            // MM/DD/YYYY or DD/MM/YYYY
+            const slashMatch = messageLower.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+            if (slashMatch) {
+                const [, p1, p2, year] = slashMatch;
+                // Assume MM/DD format
+                const month = p1.padStart(2, '0');
+                const day = p2.padStart(2, '0');
+                return { type: 'single', date: `${year}-${month}-${day}` };
+            }
+
+            // MM-DD-YYYY
+            const dashMatch = messageLower.match(/(\d{1,2})-(\d{1,2})-(\d{4})/);
+            if (dashMatch) {
+                const [, p1, p2, year] = dashMatch;
+                const month = p1.padStart(2, '0');
+                const day = p2.padStart(2, '0');
+                return { type: 'single', date: `${year}-${month}-${day}` };
+            }
+
+            return null;
+        }
+
+        function handleDateQuery(message) {
+            const parsedDate = parseNaturalDate(message);
+
+            if (!parsedDate) {
+                addBotMessage("I couldn't understand that date. Try:\n• 'Show today's expenses'\n• 'Expenses from May 5'\n• 'Last week spending'\n• '3 days ago'\n• 'January expenses'\n• 'Expenses from 2026-05-18'");
+                return;
+            }
+
+            // Filter expenses based on parsed date
+            let matchingExpenses;
+            let dateStr;
+
+            if (parsedDate.type === 'single') {
+                matchingExpenses = expenses.filter(exp => exp.date === parsedDate.date);
+                dateStr = parsedDate.date;
+            } else {
+                matchingExpenses = expenses.filter(exp =>
+                    exp.date >= parsedDate.start && exp.date <= parsedDate.end
+                );
+                dateStr = `${parsedDate.start} to ${parsedDate.end}`;
+            }
+
+            if (matchingExpenses.length === 0) {
+                addBotMessage(`❌ No expenses found for ${dateStr}\n\nAvailable dates:\n${[...new Set(expenses.map(e => e.date))].sort().reverse().join(', ')}`);
+                return;
+            }
+
+            const total = matchingExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+            let response = `📅 Expenses for ${dateStr}:\n\n`;
+            response += `Total: ${formatPHP(total)}\n`;
+            response += `Count: ${matchingExpenses.length}\n\n`;
+
+            // Sort by date (newest first)
+            matchingExpenses.sort((a, b) => b.date.localeCompare(a.date));
+
+            matchingExpenses.forEach(exp => {
+                response += `• ${exp.merchant} (${exp.date}): ${formatPHP(exp.amount)}\n`;
+                response += `  ${exp.category} - ${exp.items.join(', ')}\n`;
+            });
+
+            addBotMessage(response);
+        }
+
+        function handleItemQuery(message) {
+            // Extract merchant if specified
+            const atMatch = message.match(/at\s+([a-z\s]+?)(?:\?|$)/i);
+            const merchantQuery = atMatch?.[1]?.trim().toLowerCase();
+
+            let matchingExpenses = expenses;
+            if (merchantQuery) {
+                matchingExpenses = expenses.filter(exp =>
+                    exp.merchant.toLowerCase().includes(merchantQuery)
+                );
+            }
+
+            if (matchingExpenses.length === 0) {
+                addBotMessage(`❌ No purchases found${merchantQuery ? ` at "${merchantQuery}"` : ''}`);
+                return;
+            }
+
+            let response = `🛍️ Items Purchased${merchantQuery ? ` at ${matchingExpenses[0].merchant}` : ''}:\n\n`;
+
+            matchingExpenses.forEach(exp => {
+                response += `📅 ${exp.date} - ${exp.merchant}:\n`;
+                exp.items.forEach(item => {
+                    response += `  • ${item}\n`;
+                });
+                response += `  Total: ${formatPHP(exp.amount)}\n\n`;
+            });
+
+            addBotMessage(response);
+        }
+
+        function handleShowAllQuery() {
+            if (expenses.length === 0) {
+                addBotMessage("📭 No expenses to show. Upload a receipt to get started!");
+                return;
+            }
+
+            let response = `📋 All Expenses (${expenses.length}):\n\n`;
+            
+            expenses.forEach(exp => {
+                response += `• ${exp.merchant} - ${formatPHP(exp.amount)}\n`;
+                response += `  ${exp.date} | ${exp.category}\n`;
+                response += `  Items: ${exp.items.join(', ')}\n\n`;
+            });
+
+            const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+            response += `Total: ${formatPHP(total)}`;
+
+            addBotMessage(response);
         }
 
         function handleFileUpload(event) {
@@ -893,7 +1288,7 @@
             }
             
             // Parse and update current receipt data with proper rounding
-            const amount = Math.round(parseFloat(amountStr) * 100) / 100;
+            const amount = parseFloat(parseFloat(amountStr).toFixed(2));
             const items = itemsStr.split(',').map(item => item.trim()).filter(item => item);
             
             currentReceiptData = {
@@ -1002,7 +1397,7 @@
             }
 
             // Parse and update expense with proper rounding
-            const amount = Math.round(parseFloat(amountStr) * 100) / 100;
+            const amount = parseFloat(parseFloat(amountStr).toFixed(2));
             const items = itemsStr.split(',').map(item => item.trim()).filter(item => item);
 
             expenses[expenseIndex] = {
