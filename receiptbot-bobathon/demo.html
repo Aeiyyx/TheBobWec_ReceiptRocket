@@ -605,38 +605,69 @@
         let editingExpenseId = null;
         let confirmationPanelElement = null;
 
+        // Helper function to get Philippines time
+        function getPhilippinesDate() {
+            const now = new Date();
+            // Convert to Philippines timezone (UTC+8)
+            const phTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Manila' }));
+            return phTime;
+        }
+
+        function getPhilippinesDateString() {
+            const phDate = getPhilippinesDate();
+            const year = phDate.getFullYear();
+            const month = String(phDate.getMonth() + 1).padStart(2, '0');
+            const day = String(phDate.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         function hideConfirmationPanel() {
             if (confirmationPanelElement) {
-                confirmationPanelElement.style.display = 'none';
+                // Remove the entire confirmation panel from DOM
+                const parentMessage = confirmationPanelElement.closest('.message');
+                if (parentMessage) {
+                    parentMessage.remove();
+                } else {
+                    confirmationPanelElement.remove();
+                }
                 confirmationPanelElement = null;
             }
         }
 
-        // LocalStorage functions
-        function saveToLocalStorage() {
-            try {
-                localStorage.setItem('receiptRocketExpenses', JSON.stringify(expenses));
-                return true;
-            } catch (e) {
-                console.error('Error saving to localStorage:', e);
-                return false;
+        function updateUploadButtonState() {
+            const uploadButton = document.getElementById('uploadButton');
+            if (uploadButton) {
+                const shouldDisable = isProcessing || currentReceiptData !== null;
+                uploadButton.disabled = shouldDisable;
+                
+                if (currentReceiptData !== null) {
+                    uploadButton.title = 'Please submit or cancel the current receipt first';
+                } else if (isProcessing) {
+                    uploadButton.title = 'Processing receipt...';
+                } else {
+                    uploadButton.title = 'Upload a receipt';
+                }
             }
         }
 
+        // LocalStorage functions - DISABLED for fresh start on refresh
+        function saveToLocalStorage() {
+            // Disabled - expenses will not persist across page refreshes
+            return true;
+        }
+
         function loadFromLocalStorage() {
-            try {
-                const saved = localStorage.getItem('receiptRocketExpenses');
-                if (saved) {
-                    expenses = JSON.parse(saved);
-                }
-            } catch (e) {
-                console.error('Error loading from localStorage:', e);
-            }
+            // Disabled - start fresh on each page load
+            expenses = [];
         }
 
         function handleUploadClick() {
             if (isProcessing) {
                 addBotMessage("⏳ Please wait, I'm still processing the previous receipt...");
+                return;
+            }
+            if (currentReceiptData !== null) {
+                addBotMessage("⚠️ You have a pending receipt!\n\nPlease submit or cancel the current receipt before uploading a new one.");
                 return;
             }
             document.getElementById('fileInput').click();
@@ -645,6 +676,7 @@
         // Initialize
         window.onload = function() {
             loadFromLocalStorage();
+            updateUploadButtonState();
             addBotMessage("🚀 Welcome to ReceiptRocket!\n\nI'm your AI-powered expense assistant. Just upload a receipt photo and I'll extract all the details automatically!\n\nTry typing 'help' or click 'Upload Receipt' to get started.");
             updateDashboard();
         };
@@ -693,6 +725,7 @@
             addBotMessage("⏳ Processing your receipt... This will take a few seconds.");
             
             isProcessing = true;
+            updateUploadButtonState();
             
             // Simulate OCR processing
             setTimeout(() => {
@@ -700,11 +733,12 @@
                 currentReceiptData = {
                     ...receipt,
                     id: Date.now(),
-                    date: new Date().toISOString().split('T')[0]
+                    date: getPhilippinesDateString()
                 };
                 
                 showConfirmation(currentReceiptData);
                 isProcessing = false;
+                updateUploadButtonState();
             }, 3000);
             
             // Reset file input
@@ -712,6 +746,16 @@
         }
 
         function showConfirmation(data) {
+            // Get Philippines timezone dates for min/max
+            const phToday = getPhilippinesDateString();
+            const phDate = getPhilippinesDate();
+            const sevenDaysAgo = new Date(phDate);
+            sevenDaysAgo.setDate(phDate.getDate() - 7);
+            const year = sevenDaysAgo.getFullYear();
+            const month = String(sevenDaysAgo.getMonth() + 1).padStart(2, '0');
+            const day = String(sevenDaysAgo.getDate()).padStart(2, '0');
+            const phSevenDaysAgo = `${year}-${month}-${day}`;
+            
             const confirmationHTML = `
                 <div class="confirmation-panel" id="confirmation-panel">
                     <div class="confirmation-title">✅ Receipt Data Extracted!</div>
@@ -744,7 +788,7 @@
                         </div>
                         <div class="edit-section">
                             <label class="edit-label">Date</label>
-                            <input type="date" id="edit-conf-date" class="edit-field" value="${data.date}" max="${new Date().toISOString().split('T')[0]}" min="${new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}">
+                            <input type="date" id="edit-conf-date" class="edit-field" value="${data.date}" max="${phToday}" min="${phSevenDaysAgo}">
                         </div>
                         <div class="edit-section">
                             <label class="edit-label">Amount ($)</label>
@@ -876,6 +920,7 @@
             addBotMessage(`✅ Expense submitted successfully!\n\nExpense ID: #${currentReceiptData.id}\nAmount: $${currentReceiptData.amount.toFixed(2)}\n\nYour expense has been added to the dashboard.`);
             
             currentReceiptData = null;
+            updateUploadButtonState();
             updateDashboard();
         }
 
@@ -883,6 +928,7 @@
             hideConfirmationPanel();
             addBotMessage("❌ Receipt cancelled. Feel free to upload another one!");
             currentReceiptData = null;
+            updateUploadButtonState();
         }
 
         function startEditExpense(id) {
@@ -891,16 +937,17 @@
         }
 
         function validateDate(dateStr) {
-            const selectedDate = new Date(dateStr);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
+            // Use Philippines timezone for validation
+            const selectedDate = new Date(dateStr + 'T00:00:00');
+            const phToday = getPhilippinesDate();
+            phToday.setHours(0, 0, 0, 0);
             
-            const sevenDaysAgo = new Date(today);
-            sevenDaysAgo.setDate(today.getDate() - 7);
+            const sevenDaysAgo = new Date(phToday);
+            sevenDaysAgo.setDate(phToday.getDate() - 7);
             
             selectedDate.setHours(0, 0, 0, 0);
             
-            if (selectedDate > today) {
+            if (selectedDate > phToday) {
                 return { valid: false, error: 'Date cannot be in the future' };
             }
             
@@ -994,6 +1041,16 @@
         }
 
         function updateDashboard() {
+            // Get Philippines timezone dates for min/max
+            const phToday = getPhilippinesDateString();
+            const phDate = getPhilippinesDate();
+            const sevenDaysAgo = new Date(phDate);
+            sevenDaysAgo.setDate(phDate.getDate() - 7);
+            const year = sevenDaysAgo.getFullYear();
+            const month = String(sevenDaysAgo.getMonth() + 1).padStart(2, '0');
+            const day = String(sevenDaysAgo.getDate()).padStart(2, '0');
+            const phSevenDaysAgo = `${year}-${month}-${day}`;
+            
             // Update total
             const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
             document.getElementById('totalAmount').textContent = `$${total.toFixed(2)}`;
@@ -1034,7 +1091,7 @@
                                     </div>
                                     <div class="edit-section">
                                         <label class="edit-label">Date</label>
-                                        <input type="date" id="edit-date-${exp.id}" class="edit-field" value="${exp.date}" max="${new Date().toISOString().split('T')[0]}" min="${new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}">
+                                        <input type="date" id="edit-date-${exp.id}" class="edit-field" value="${exp.date}" max="${phToday}" min="${phSevenDaysAgo}">
                                     </div>
                                     <div class="edit-section">
                                         <label class="edit-label">Amount ($)</label>
@@ -1105,7 +1162,13 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
             
-            const timestamp = new Date().toLocaleTimeString();
+            // Use Philippines timezone for timestamp
+            const phDate = getPhilippinesDate();
+            const timestamp = phDate.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
             
             if (isHTML) {
                 messageDiv.innerHTML = content;
