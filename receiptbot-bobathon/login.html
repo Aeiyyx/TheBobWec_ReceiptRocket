@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 ReceiptRocket - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            max-width: 450px;
+            width: 100%;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .logo {
+            font-size: 3em;
+            margin-bottom: 10px;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .login-header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .login-header p {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        .login-body {
+            padding: 40px 30px;
+        }
+
+        .role-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .role-option {
+            flex: 1;
+            position: relative;
+        }
+
+        .role-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .role-label {
+            display: block;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .role-option input[type="radio"]:checked + .role-label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .role-label:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .role-icon {
+            font-size: 1.5em;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-group input[type="email"],
+        .form-group input[type="text"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 14px 45px 14px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input.error {
+            border-color: #ef4444;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1.2em;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            color: #999;
+            padding: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .toggle-password:hover {
+            color: #667eea;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 0.9em;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .forgot-password {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .login-button:hover::before {
+            left: 100%;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .login-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-error {
+            background: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+
+        .alert-success {
+            background: #efe;
+            color: #3c3;
+            border: 1px solid #cfc;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .login-button.loading .button-text {
+            display: none;
+        }
+
+        .login-button.loading .loading-spinner {
+            display: block;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 25px;
+            color: #999;
+            font-size: 0.85em;
+        }
+
+        .session-info {
+            background: #f0f4ff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #667eea;
+            display: none;
+        }
+
+        .session-info.show {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .login-container {
+                border-radius: 15px;
+            }
+
+            .login-header {
+                padding: 30px 20px;
+            }
+
+            .login-header h1 {
+                font-size: 1.6em;
+            }
+
+            .login-body {
+                padding: 30px 20px;
+            }
+
+            .role-selector {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .remember-forgot {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+        }
+
+        /* Accessibility */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Focus visible for keyboard navigation */
+        *:focus-visible {
+            outline: 3px solid #667eea;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo">🚀</div>
+            <h1>ReceiptRocket</h1>
+            <p>AI-Powered Expense Management</p>
+        </div>
+
+        <div class="login-body">
+            <div id="alertBox" class="alert" role="alert" aria-live="polite"></div>
+            
+            <div id="sessionInfo" class="session-info">
+                <strong>Session Active:</strong> <span id="sessionUser"></span>
+            </div>
+
+            <form id="loginForm" novalidate>
+                <div class="role-selector" role="radiogroup" aria-label="Select user role">
+                    <div class="role-option">
+                        <input type="radio" id="roleEmployee" name="role" value="employee" checked>
+                        <label for="roleEmployee" class="role-label">
+                            <span class="role-icon">👤</span>
+                            <span>Employee</span>
+                        </label>
+                    </div>
+                    <div class="role-option">
+                        <input type="radio" id="roleManager" name="role" value="manager">
+                        <label for="roleManager" class="role-label">
+                            <span class="role-icon">👔</span>
+                            <span>Manager</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            placeholder="Enter your email"
+                            aria-required="true"
+                            aria-describedby="emailError"
+                            autocomplete="email"
+                        >
+                    </div>
+                    <div id="emailError" class="error-message" role="alert"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="Enter your password"
+                            aria-required="true"
+                            aria-describedby="passwordError"
+                            autocomplete="current-password"
+                        >
+                        <button 
+                            type="button" 
+                            class="toggle-password" 
+                            id="togglePassword"
+                            aria-label="Toggle password visibility"
+                        >
+                            👁️
+                        </button>
+                    </div>
+                    <div id="passwordError" class="error-message" role="alert"></div>
+                </div>
+
+                <div class="remember-forgot">
+                    <label class="remember-me">
+                        <input type="checkbox" id="rememberMe" name="rememberMe">
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-password" id="forgotPassword">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="login-button" id="loginButton">
+                    <span class="button-text">Login</span>
+                    <div class="loading-spinner"></div>
+                </button>
+            </form>
+
+            <div class="footer-text">
+                <p>Demo Credentials:</p>
+                <p><strong>Employee:</strong> employee@receiptrocket.com / password123</p>
+                <p><strong>Manager:</strong> manager@receiptrocket.com / password123</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Predefined users database (in production, this would be server-side)
+        const USERS_DB = {
+            'employee@receiptrocket.com': {
+                password: 'password123', // In production, this would be hashed
+                role: 'employee',
+                name: 'John Doe',
+                id: 'emp001'
+            },
+            'manager@receiptrocket.com': {
+                password: 'password123', // In production, this would be hashed
+                role: 'manager',
+                name: 'Jane Smith',
+                id: 'mgr001'
+            },
+            'test@employee.com': {
+                password: 'test123',
+                role: 'employee',
+                name: 'Test Employee',
+                id: 'emp002'
+            },
+            'test@manager.com': {
+                password: 'test123',
+                role: 'manager',
+                name: 'Test Manager',
+                id: 'mgr002'
+            }
+        };
+
+        // Session configuration
+        const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+        const SESSION_KEY = 'receiptrocket_session';
+        const REMEMBER_KEY = 'receiptrocket_remember';
+
+        // DOM Elements
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const togglePasswordBtn = document.getElementById('togglePassword');
+        const rememberMeCheckbox = document.getElementById('rememberMe');
+        const loginButton = document.getElementById('loginButton');
+        const alertBox = document.getElementById('alertBox');
+        const sessionInfo = document.getElementById('sessionInfo');
+        const sessionUser = document.getElementById('sessionUser');
+        const forgotPasswordLink = document.getElementById('forgotPassword');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkExistingSession();
+            loadRememberedCredentials();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Form submission
+            loginForm.addEventListener('submit', handleLogin);
+
+            // Toggle password visibility
+            togglePasswordBtn.addEventListener('click', togglePasswordVisibility);
+
+            // Real-time validation
+            emailInput.addEventListener('blur', () => validateField('email'));
+            passwordInput.addEventListener('blur', () => validateField('password'));
+
+            // Clear errors on input
+            emailInput.addEventListener('input', () => clearError('email'));
+            passwordInput.addEventListener('input', () => clearError('password'));
+
+            // Forgot password
+            forgotPasswordLink.addEventListener('click', handleForgotPassword);
+
+            // Session timeout check
+            setInterval(checkSessionTimeout, 60000); // Check every minute
+        }
+
+        function togglePasswordVisibility() {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            togglePasswordBtn.textContent = type === 'password' ? '👁️' : '🙈';
+        }
+
+        function validateField(fieldName) {
+            const input = document.getElementById(fieldName);
+            const errorDiv = document.getElementById(`${fieldName}Error`);
+            let isValid = true;
+            let errorMessage = '';
+
+            if (fieldName === 'email') {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    errorMessage = 'Email is required';
+                } else if (!isValidEmail(input.value)) {
+                    isValid = false;
+                    errorMessage = 'Please enter a valid email address';
+                }
+            } else if (fieldName === 'password') {
+                if (!input.value) {
+                    isValid = false;
+                    errorMessage = 'Password is required';
+                } else if (input.value.length < 6) {
+                    isValid = false;
+                    errorMessage = 'Password must be at least 6 characters';
+                }
+            }
+
+            if (!isValid) {
+                input.classList.add('error');
+                errorDiv.textContent = errorMessage;
+                errorDiv.classList.add('show');
+            } else {
+                input.classList.remove('error');
+                errorDiv.classList.remove('show');
+            }
+
+            return isValid;
+        }
+
+        function clearError(fieldName) {
+            const input = document.getElementById(fieldName);
+            const errorDiv = document.getElementById(`${fieldName}Error`);
+            input.classList.remove('error');
+            errorDiv.classList.remove('show');
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function showAlert(message, type = 'error') {
+            alertBox.textContent = message;
+            alertBox.className = `alert alert-${type} show`;
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                alertBox.classList.remove('show');
+            }, 5000);
+        }
+
+        function setLoading(isLoading) {
+            if (isLoading) {
+                loginButton.classList.add('loading');
+                loginButton.disabled = true;
+            } else {
+                loginButton.classList.remove('loading');
+                loginButton.disabled = false;
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+
+            // Validate all fields
+            const isEmailValid = validateField('email');
+            const isPasswordValid = validateField('password');
+
+            if (!isEmailValid || !isPasswordValid) {
+                showAlert('Please fix the errors before submitting', 'error');
+                return;
+            }
+
+            // Get form values
+            const email = emailInput.value.trim().toLowerCase();
+            const password = passwordInput.value;
+            const selectedRole = document.querySelector('input[name="role"]:checked').value;
+            const rememberMe = rememberMeCheckbox.checked;
+
+            // Show loading state
+            setLoading(true);
+
+            // Simulate network delay (in production, this would be an API call)
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Authenticate user
+            const user = USERS_DB[email];
+
+            if (!user) {
+                setLoading(false);
+                showAlert('Invalid email or password', 'error');
+                return;
+            }
+
+            // Verify password (in production, compare hashed passwords)
+            if (user.password !== password) {
+                setLoading(false);
+                showAlert('Invalid email or password', 'error');
+                return;
+            }
+
+            // Verify role matches
+            if (user.role !== selectedRole) {
+                setLoading(false);
+                showAlert(`This account is not registered as a ${selectedRole}`, 'error');
+                return;
+            }
+
+            // Create session
+            const session = {
+                userId: user.id,
+                email: email,
+                name: user.name,
+                role: user.role,
+                loginTime: new Date().toISOString(),
+                expiresAt: new Date(Date.now() + SESSION_TIMEOUT).toISOString()
+            };
+
+            // Save session
+            sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+
+            // Save credentials if remember me is checked
+            if (rememberMe) {
+                localStorage.setItem(REMEMBER_KEY, JSON.stringify({
+                    email: email,
+                    role: selectedRole
+                }));
+            } else {
+                localStorage.removeItem(REMEMBER_KEY);
+            }
+
+            // Show success message
+            showAlert('Login successful! Redirecting...', 'success');
+
+            // Redirect based on role
+            setTimeout(() => {
+                if (user.role === 'employee') {
+                    window.location.href = 'demo.html';
+                } else if (user.role === 'manager') {
+                    window.location.href = 'manager-dashboard.html';
+                }
+            }, 1500);
+        }
+
+        function checkExistingSession() {
+            const sessionData = sessionStorage.getItem(SESSION_KEY);
+            
+            if (sessionData) {
+                try {
+                    const session = JSON.parse(sessionData);
+                    const now = new Date();
+                    const expiresAt = new Date(session.expiresAt);
+
+                    if (now < expiresAt) {
+                        // Session is still valid
+                        sessionInfo.classList.add('show');
+                        sessionUser.textContent = `${session.name} (${session.role})`;
+                        
+                        // Auto-redirect after 2 seconds
+                        setTimeout(() => {
+                            if (session.role === 'employee') {
+                                window.location.href = 'demo.html';
+                            } else if (session.role === 'manager') {
+                                window.location.href = 'manager-dashboard.html';
+                            }
+                        }, 2000);
+                    } else {
+                        // Session expired
+                        sessionStorage.removeItem(SESSION_KEY);
+                        showAlert('Your session has expired. Please login again.', 'error');
+                    }
+                } catch (e) {
+                    console.error('Error parsing session data:', e);
+                    sessionStorage.removeItem(SESSION_KEY);
+                }
+            }
+        }
+
+        function checkSessionTimeout() {
+            const sessionData = sessionStorage.getItem(SESSION_KEY);
+            
+            if (sessionData) {
+                try {
+                    const session = JSON.parse(sessionData);
+                    const now = new Date();
+                    const expiresAt = new Date(session.expiresAt);
+
+                    if (now >= expiresAt) {
+                        sessionStorage.removeItem(SESSION_KEY);
+                        showAlert('Your session has expired. Please login again.', 'error');
+                    }
+                } catch (e) {
+                    console.error('Error checking session timeout:', e);
+                }
+            }
+        }
+
+        function loadRememberedCredentials() {
+            const remembered = localStorage.getItem(REMEMBER_KEY);
+            
+            if (remembered) {
+                try {
+                    const data = JSON.parse(remembered);
+                    emailInput.value = data.email;
+                    
+                    // Select the remembered role
+                    const roleInput = document.getElementById(`role${data.role.charAt(0).toUpperCase() + data.role.slice(1)}`);
+                    if (roleInput) {
+                        roleInput.checked = true;
+                    }
+                    
+                    rememberMeCheckbox.checked = true;
+                    passwordInput.focus();
+                } catch (e) {
+                    console.error('Error loading remembered credentials:', e);
+                    localStorage.removeItem(REMEMBER_KEY);
+                }
+            }
+        }
+
+        function handleForgotPassword(e) {
+            e.preventDefault();
+            showAlert('Password reset functionality will be available soon. Please contact your administrator.', 'error');
+        }
+
+        // Logout function (can be called from other pages)
+        function logout() {
+            sessionStorage.removeItem(SESSION_KEY);
+            window.location.href = 'login.html';
+        }
+
+        // Export logout function for use in other pages
+        window.receiptRocketLogout = logout;
+
+        // Security: Prevent SQL injection in input fields
+        function sanitizeInput(input) {
+            // Remove potentially dangerous characters
+            return input.replace(/[<>\"'%;()&+]/g, '');
+        }
+
+        // Apply sanitization on form submission
+        loginForm.addEventListener('submit', function() {
+            emailInput.value = sanitizeInput(emailInput.value);
+        });
+    </script>
+</body>
+</html>

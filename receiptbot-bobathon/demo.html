@@ -49,6 +49,37 @@
             font-size: 0.9em;
         }
 
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .logout-btn:active {
+            transform: translateY(0);
+        }
+
         .main-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -890,6 +921,96 @@
             color: #999;
             padding: 40px 20px;
             font-style: italic;
+
+        /* Enhanced Threaded Conversation Styles */
+        .comment-thread {
+            margin-bottom: 24px;
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .comment-item {
+            position: relative;
+            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.08);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .comment-item:hover {
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .comment-author {
+            font-weight: 700;
+            color: #2d3748;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .comment-text {
+            color: #4a5568;
+            line-height: 1.6;
+            font-size: 0.95em;
+            margin-bottom: 12px;
+            padding: 8px 0;
+        }
+
+        .comment-time {
+            font-size: 0.8em;
+            color: #a0aec0;
+            font-weight: 500;
+        }
+
+        /* Responsive Design for Comments */
+        @media (max-width: 768px) {
+            .comment-item {
+                padding: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .comment-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .thread-line {
+            position: absolute;
+            left: -15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #667eea, #e0e0e0);
         }
 
         .view-comments-btn {
@@ -911,13 +1032,18 @@
     </style>
 </head>
 <body>
+
+    <button onclick="handleLogout()" class="logout-btn">
+            🚪 Logout
+    </button>
+
     <div class="container">
         <div class="header">
             <div>
                 <h1>🚀 ReceiptRocket</h1>
                 <p>AI-Powered Expense Assistant</p>
             </div>
-            <div style="display: flex; gap: 10px; align-items: center;">
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center;">
                 <button onclick="window.open('manager-dashboard.html', '_blank')"
                         style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                                color: white;
@@ -929,6 +1055,7 @@
                                transition: transform 0.2s;">
                     👔 Manager View
                 </button>
+                
                 <span class="demo-badge">📱 DEMO VERSION - No Installation Required</span>
             </div>
         </div>
@@ -1001,6 +1128,30 @@
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
+        }
+
+        // Logout function - clears all session data and redirects to login
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Clear all session-related data from sessionStorage
+                sessionStorage.removeItem('receiptrocket_session');
+                sessionStorage.removeItem('userRole');
+                sessionStorage.removeItem('currentUser');
+                
+                // Clear all session-related data from localStorage
+                localStorage.removeItem('receiptrocket_session');
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('currentUser');
+                
+                // Optional: Clear expense data if needed (commented out to preserve demo data)
+                // localStorage.removeItem('receiptbot_expenses');
+                
+                // Show logout message
+                alert('You have been logged out successfully.');
+                
+                // Redirect to login page
+                window.location.href = 'login.html';
+            }
         }
 
         // Sample receipt data for simulation (amounts in PHP)
@@ -2391,30 +2542,68 @@
         }
 
         // View Comments Modal Functions
+        let currentExpenseId = null;
+
         function viewComments(expenseId) {
+            currentExpenseId = expenseId;
             const expense = expenses.find(e => e.id === expenseId);
             if (!expense) return;
 
-            const modalBody = document.getElementById('commentsModalBody');
-            
-            if (expense.comments && expense.comments.length > 0) {
-                modalBody.innerHTML = expense.comments.map(comment => `
-                    <div class="comment-item">
-                        <div class="comment-author">${comment.author}</div>
-                        <div class="comment-text">${comment.text}</div>
-                        <div class="comment-time">${formatCommentTime(comment.timestamp)}</div>
-                    </div>
-                `).join('');
-
-                // Mark comments as read
-                expense.comments.forEach(c => c.read = true);
-                saveToLocalStorage();
-                updateDashboard();
-            } else {
-                modalBody.innerHTML = '<div class="no-comments-message">No comments yet from the manager.</div>';
+            // Initialize comments array with replies if not exists
+            if (!expense.comments) {
+                expense.comments = [];
             }
+            
+            // Ensure each comment has a replies array and unique ID
+            expense.comments.forEach((comment, index) => {
+                if (!comment.id) comment.id = Date.now() + index;
+                if (!comment.replies) comment.replies = [];
+            });
+
+            renderCommentsThread(expense);
+            
+            // Mark comments as read
+            expense.comments.forEach(c => {
+                c.read = true;
+                if (c.replies) {
+                    c.replies.forEach(r => r.read = true);
+                }
+            });
+            saveToLocalStorage();
+            updateDashboard();
 
             document.getElementById('commentsModalOverlay').classList.add('active');
+        }
+
+        function renderCommentsThread(expense) {
+            const modalBody = document.getElementById('commentsModalBody');
+            
+            if (!expense.comments || expense.comments.length === 0) {
+                modalBody.innerHTML = '<div class="no-comments-message">No comments yet from the manager.</div>';
+                return;
+            }
+
+            modalBody.innerHTML = expense.comments.map(comment => {
+                const replyCount = comment.replies ? comment.replies.length : 0;
+                const badge = comment.author === 'Manager' ?
+                    '<span class="comment-badge badge-manager">Manager</span>' :
+                    '<span class="comment-badge badge-employee">Employee</span>';
+                
+                return `
+                    <div class="comment-thread">
+                        <div class="comment-item">
+                            <div class="comment-header">
+                                <div class="comment-author">
+                                    ${comment.author}
+                                    ${badge}
+                                </div>
+                                <div class="comment-time">${formatCommentTime(comment.timestamp)}</div>
+                            </div>
+                            <div class="comment-text">${comment.text}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function closeCommentsModal(event) {
