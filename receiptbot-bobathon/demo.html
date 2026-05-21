@@ -354,6 +354,282 @@
             background: linear-gradient(135deg, #5a6268 0%, #545b62 100%);
         }
 
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: 8px;
+        }
+
+        .status-draft {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-reimbursed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .submit-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            text-align: center;
+        }
+
+        .submit-section h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .submit-section p {
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+
+        .btn-submit-manager {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit-manager:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-submit-manager:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .notification-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #ff4444;
+            border-radius: 50%;
+            margin-left: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .comments-container {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 2px solid #dee2e6;
+        }
+
+        .comments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .comments-title {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .comments-count {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .comments-thread {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            scroll-behavior: smooth;
+        }
+
+        .comments-thread::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .comments-thread::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .comments-thread::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .comments-thread::-webkit-scrollbar-thumb:hover {
+            background: #5568d3;
+        }
+
+        .comment-message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .comment-message.manager {
+            align-items: flex-start;
+        }
+
+        .comment-message.employee {
+            align-items: flex-end;
+        }
+
+        .comment-bubble {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .comment-message.manager .comment-bubble {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 1px solid #90caf9;
+            border-bottom-left-radius: 4px;
+        }
+
+        .comment-message.employee .comment-bubble {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border: 1px solid #81c784;
+            border-bottom-right-radius: 4px;
+        }
+
+        .comment-sender {
+            font-weight: 600;
+            font-size: 0.85em;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .comment-message.manager .comment-sender {
+            color: #1976d2;
+        }
+
+        .comment-message.employee .comment-sender {
+            color: #388e3c;
+        }
+
+        .comment-role {
+            background: rgba(0,0,0,0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75em;
+        }
+
+        .comment-text {
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 6px;
+        }
+
+        .comment-time {
+            font-size: 0.75em;
+            color: #6c757d;
+            text-align: right;
+        }
+
+        .comment-input-section {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95em;
+            resize: vertical;
+            min-height: 60px;
+            transition: border-color 0.2s;
+        }
+
+        .comment-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .comment-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .comment-hint {
+            font-size: 0.85em;
+            color: #6c757d;
+        }
+
+        .empty-comments {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+
+        .empty-comments-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
         .btn-info {
             background: #17a2b8;
             color: white;
@@ -517,14 +793,144 @@
         .instructions li {
             margin: 5px 0;
         }
+
+        /* Comments Modal Styles */
+        .comments-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .comments-modal-overlay.active {
+            display: flex;
+        }
+
+        .comments-modal {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .comments-modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .comments-modal-header h3 {
+            margin: 0;
+            font-size: 1.3em;
+        }
+
+        .comments-modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .comments-modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .comments-modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .comment-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 3px solid #667eea;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .comment-text {
+            color: #333;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .comment-time {
+            font-size: 0.85em;
+            color: #999;
+        }
+
+        .no-comments-message {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            font-style: italic;
+        }
+
+        .view-comments-btn {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .view-comments-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 ReceiptRocket</h1>
-            <p>AI-Powered Expense Assistant</p>
-            <span class="demo-badge">📱 DEMO VERSION - No Installation Required</span>
+            <div>
+                <h1>🚀 ReceiptRocket</h1>
+                <p>AI-Powered Expense Assistant</p>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <button onclick="window.open('manager-dashboard.html', '_blank')"
+                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                               color: white;
+                               border: none;
+                               padding: 10px 20px;
+                               border-radius: 8px;
+                               cursor: pointer;
+                               font-weight: 600;
+                               transition: transform 0.2s;">
+                    👔 Manager View
+                </button>
+                <span class="demo-badge">📱 DEMO VERSION - No Installation Required</span>
+            </div>
         </div>
 
         <div class="main-content">
@@ -642,6 +1048,8 @@
         let editingExpenseId = null;
         let confirmationPanelElement = null;
         let selectedExpenseIds = new Set();
+        const STORAGE_KEY = 'receiptbot_expenses';
+        const EMPLOYEE_NAME = 'John Doe'; // Default employee name
 
         // Helper function to get Philippines time
         function getPhilippinesDate() {
@@ -688,15 +1096,30 @@
             }
         }
 
-        // LocalStorage functions - DISABLED for fresh start on refresh
+        // LocalStorage functions - ENABLED for manager dashboard integration
         function saveToLocalStorage() {
-            // Disabled - expenses will not persist across page refreshes
-            return true;
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
+                return true;
+            } catch (error) {
+                console.error('Error saving to localStorage:', error);
+                return false;
+            }
         }
 
         function loadFromLocalStorage() {
-            // Disabled - start fresh on each page load
-            expenses = [];
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    expenses = JSON.parse(stored);
+                    console.log('Loaded expenses from localStorage:', expenses.length);
+                } else {
+                    expenses = [];
+                }
+            } catch (error) {
+                console.error('Error loading from localStorage:', error);
+                expenses = [];
+            }
         }
 
         function handleUploadClick() {
@@ -710,6 +1133,25 @@
             }
             document.getElementById('fileInput').click();
         }
+
+        // Listen for storage changes from manager dashboard
+        window.addEventListener('storage', (e) => {
+            if (e.key === STORAGE_KEY) {
+                loadFromLocalStorage();
+                updateDashboard();
+                
+                // Check for new manager comments
+                const newExpenses = e.newValue ? JSON.parse(e.newValue) : [];
+                const hasNewComments = newExpenses.some(exp =>
+                    exp.comments && exp.comments.length > 0 &&
+                    exp.comments.some(c => c.author === 'Manager' && !c.read)
+                );
+                
+                if (hasNewComments) {
+                    addBotMessage("💬 You have new comments from your manager! Check your expenses below.");
+                }
+            }
+        });
 
         // Initialize
         window.onload = function() {
@@ -759,8 +1201,14 @@
                 return;
             }
 
+            // Status queries
+            if (message.includes('status') && !message.includes('total') && !message.includes('summary')) {
+                handleStatusQuery(message);
+                return;
+            }
+
             // Total/Summary queries
-            if (message.includes('total') || message.includes('summary') || message.includes('status') || message.includes('how much') && message.includes('spent')) {
+            if (message.includes('total') || message.includes('summary') || message.includes('how much') && message.includes('spent')) {
                 handleTotalQuery(message);
                 return;
             }
@@ -822,6 +1270,64 @@
                     const percentage = (amount / total * 100).toFixed(1);
                     response += `• ${cat}: ${formatPHP(amount)} (${percentage}%)\n`;
                 });
+
+            addBotMessage(response);
+        }
+
+        function handleStatusQuery(message) {
+            if (expenses.length === 0) {
+                addBotMessage("📭 You don't have any expenses yet!\n\nUpload a receipt to get started.");
+                return;
+            }
+
+            // Group expenses by status
+            const statusGroups = {
+                'pending': expenses.filter(e => e.status === 'pending'),
+                'approved': expenses.filter(e => e.status === 'approved'),
+                'rejected': expenses.filter(e => e.status === 'rejected'),
+                'reimbursed': expenses.filter(e => e.status === 'reimbursed')
+            };
+
+            const statusConfig = {
+                'pending': { emoji: '⏳', label: 'PENDING REVIEW', color: '🟡' },
+                'approved': { emoji: '✅', label: 'APPROVED', color: '🟢' },
+                'rejected': { emoji: '❌', label: 'REJECTED', color: '🔴' },
+                'reimbursed': { emoji: '💰', label: 'REIMBURSED', color: '🟣' }
+            };
+
+            let response = `📋 EXPENSE STATUS REPORT\n`;
+            response += `${'═'.repeat(35)}\n\n`;
+            
+            // Show summary counts
+            response += `📊 SUMMARY:\n`;
+            response += `${'─'.repeat(35)}\n`;
+            Object.entries(statusGroups).forEach(([status, exps]) => {
+                const config = statusConfig[status];
+                response += `${config.color} ${config.label.padEnd(20)} ${exps.length}\n`;
+            });
+            response += `\n${'═'.repeat(35)}\n\n`;
+
+            // Show detailed breakdown for each status
+            Object.entries(statusGroups).forEach(([status, exps]) => {
+                if (exps.length > 0) {
+                    const config = statusConfig[status];
+                    response += `${config.emoji} ${config.label}\n`;
+                    response += `${'─'.repeat(35)}\n`;
+                    
+                    exps.forEach((exp, index) => {
+                        response += `\n${index + 1}. 🏪 ${exp.merchant}\n`;
+                        response += `   💵 Amount: ${formatPHP(exp.amount)}\n`;
+                        response += `   📅 Date: ${exp.date}\n`;
+                        
+                        // Show manager comments if any
+                        if (exp.comments && exp.comments.length > 0) {
+                            const latestComment = exp.comments[exp.comments.length - 1];
+                            response += `   💬 Manager: "${latestComment.text}"\n`;
+                        }
+                    });
+                    response += `\n${'═'.repeat(35)}\n\n`;
+                }
+            });
 
             addBotMessage(response);
         }
@@ -1348,9 +1854,24 @@
             
             hideConfirmationPanel();
             
-            expenses.push(currentReceiptData);
+            // Add expense as draft (not yet submitted to manager)
+            const expenseWithStatus = {
+                ...currentReceiptData,
+                status: 'draft',
+                employeeName: EMPLOYEE_NAME,
+                createdAt: new Date().toISOString(),
+                submittedAt: null,
+                comments: [],
+                timeline: [{
+                    action: 'created',
+                    timestamp: new Date().toISOString(),
+                    user: EMPLOYEE_NAME
+                }]
+            };
+            
+            expenses.push(expenseWithStatus);
             saveToLocalStorage();
-            addBotMessage(`✅ Expense submitted successfully!\n\nExpense ID: #${currentReceiptData.id}\nAmount: ${formatPHP(currentReceiptData.amount)}\n\nYour expense has been added to the dashboard.`);
+            addBotMessage(`✅ Expense saved as draft!\n\nExpense ID: #${currentReceiptData.id}\nAmount: ${formatPHP(currentReceiptData.amount)}\nStatus: 📝 Draft\n\nYour expense has been saved. Click "Submit to Manager" when you're ready to send it for approval.`);
             
             currentReceiptData = null;
             updateUploadButtonState();
@@ -1462,6 +1983,69 @@
         function cancelEdit() {
             editingExpenseId = null;
             updateDashboard();
+        }
+
+        function submitToManager() {
+            const draftExpenses = expenses.filter(e => e.status === 'draft');
+            
+            if (draftExpenses.length === 0) {
+                alert('No draft expenses to submit!');
+                return;
+            }
+
+            if (confirm(`Submit ${draftExpenses.length} expense(s) to your manager for approval?`)) {
+                let submittedCount = 0;
+                
+                draftExpenses.forEach(exp => {
+                    exp.status = 'pending';
+                    exp.submittedAt = new Date().toISOString();
+                    exp.timeline.push({
+                        action: 'submitted',
+                        timestamp: new Date().toISOString(),
+                        user: EMPLOYEE_NAME
+                    });
+                    submittedCount++;
+                });
+
+                saveToLocalStorage();
+                updateDashboard();
+                
+                addBotMessage(`✅ Successfully submitted ${submittedCount} expense(s) to your manager!\n\nStatus: ⏳ Pending Approval\n\nYour manager will review and approve your expenses soon.`);
+            }
+        }
+
+        function submitSelectedToManager() {
+            if (selectedExpenseIds.size === 0) {
+                alert('Please select expenses to submit!');
+                return;
+            }
+
+            const selectedDrafts = expenses.filter(e =>
+                selectedExpenseIds.has(e.id) && e.status === 'draft'
+            );
+
+            if (selectedDrafts.length === 0) {
+                alert('No draft expenses selected! Only draft expenses can be submitted.');
+                return;
+            }
+
+            if (confirm(`Submit ${selectedDrafts.length} selected expense(s) to your manager?`)) {
+                selectedDrafts.forEach(exp => {
+                    exp.status = 'pending';
+                    exp.submittedAt = new Date().toISOString();
+                    exp.timeline.push({
+                        action: 'submitted',
+                        timestamp: new Date().toISOString(),
+                        user: EMPLOYEE_NAME
+                    });
+                });
+
+                selectedExpenseIds.clear();
+                saveToLocalStorage();
+                updateDashboard();
+                
+                addBotMessage(`✅ Successfully submitted ${selectedDrafts.length} expense(s) to your manager!\n\nStatus: ⏳ Pending Approval`);
+            }
         }
 
         function deleteExpense(id) {
@@ -1576,6 +2160,32 @@
                     </div>
                 `;
             } else {
+                // Count draft expenses
+                const draftCount = expenses.filter(e => e.status === 'draft').length;
+                const selectedDraftCount = Array.from(selectedExpenseIds)
+                    .filter(id => expenses.find(e => e.id === id && e.status === 'draft')).length;
+
+                // Add submit to manager section
+                let submitSectionHTML = '';
+                if (draftCount > 0) {
+                    submitSectionHTML = `
+                        <div class="submit-section">
+                            <h3>📤 Ready to Submit?</h3>
+                            <p>You have ${draftCount} draft expense(s) ready for manager approval</p>
+                            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                                <button class="btn-submit-manager" onclick="submitToManager()">
+                                    📨 Submit All Drafts (${draftCount})
+                                </button>
+                                ${selectedDraftCount > 0 ? `
+                                    <button class="btn-submit-manager" onclick="submitSelectedToManager()">
+                                        ✅ Submit Selected (${selectedDraftCount})
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                }
+
                 // Add bulk action controls at the top with improved design
                 let bulkActionsHTML = `
                     <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
@@ -1623,43 +2233,120 @@
                     
                     if (isEditing) {
                         return `
-                            <div class="expense-item editing" id="expense-${exp.id}" style="flex-direction: column;">
-                                <div class="expense-info" style="width: 100%;">
-                                    <div class="edit-section">
-                                        <label class="edit-label">Merchant Name</label>
-                                        <input type="text" id="edit-merchant-${exp.id}" class="edit-field" value="${exp.merchant}" placeholder="Enter merchant name">
-                                    </div>
-                                    <div class="edit-section">
-                                        <label class="edit-label">Date</label>
-                                        <input type="date" id="edit-date-${exp.id}" class="edit-field" value="${exp.date}" max="${phToday}" min="${phSevenDaysAgo}">
-                                    </div>
-                                    <div class="edit-section">
-                                        <label class="edit-label">Amount (₱)</label>
-                                        <input type="number" id="edit-amount-${exp.id}" class="edit-field" value="${exp.amount}" step="any" min="0" placeholder="0.00">
-                                    </div>
-                                    <div class="edit-section">
-                                        <label class="edit-label">Category</label>
-                                        <input type="text" id="edit-category-${exp.id}" class="edit-field" value="${exp.category}" placeholder="e.g., Food & Dining">
-                                    </div>
-                                    <div class="edit-section">
-                                        <label class="edit-label">Items (comma-separated)</label>
-                                        <input type="text" id="edit-items-${exp.id}" class="edit-field" value="${exp.items.join(', ')}" placeholder="Item 1, Item 2, Item 3">
-                                    </div>
-                                    <div id="error-${exp.id}"></div>
+                            <div class="expense-item editing" id="expense-${exp.id}"
+                                 style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+                                        border: 2px solid #667eea;
+                                        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.2);
+                                        padding: 25px;
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: 20px;">
+                                
+                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                                    <span style="font-size: 1.5em;">✏️</span>
+                                    <h3 style="margin: 0; color: #667eea; font-size: 1.2em;">Edit Expense</h3>
+                                    <span class="status-badge status-${exp.status}" style="margin-left: auto;">${exp.status}</span>
                                 </div>
-                                <div class="expense-actions" style="flex-direction: row; gap: 10px; width: 100%; justify-content: flex-end; margin-top: 15px;">
-                                    <span id="save-indicator-${exp.id}" class="save-indicator" style="display: none; margin-right: auto;">✅ Saved!</span>
-                                    <button class="btn btn-secondary btn-small" onclick="cancelEdit()">
+
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                                    <div class="edit-section">
+                                        <label class="edit-label">🏪 Merchant Name</label>
+                                        <input type="text"
+                                               id="edit-merchant-${exp.id}"
+                                               class="edit-field"
+                                               value="${exp.merchant}"
+                                               placeholder="Enter merchant name"
+                                               style="font-size: 1em; padding: 12px;">
+                                    </div>
+                                    
+                                    <div class="edit-section">
+                                        <label class="edit-label">📅 Date</label>
+                                        <input type="date"
+                                               id="edit-date-${exp.id}"
+                                               class="edit-field"
+                                               value="${exp.date}"
+                                               max="${phToday}"
+                                               min="${phSevenDaysAgo}"
+                                               style="font-size: 1em; padding: 12px;">
+                                    </div>
+                                    
+                                    <div class="edit-section">
+                                        <label class="edit-label">💰 Amount (₱)</label>
+                                        <input type="number"
+                                               id="edit-amount-${exp.id}"
+                                               class="edit-field"
+                                               value="${exp.amount}"
+                                               step="0.01"
+                                               min="0"
+                                               placeholder="0.00"
+                                               style="font-size: 1.1em; padding: 12px; font-weight: 600;">
+                                    </div>
+                                    
+                                    <div class="edit-section">
+                                        <label class="edit-label">🏷️ Category</label>
+                                        <input type="text"
+                                               id="edit-category-${exp.id}"
+                                               class="edit-field"
+                                               value="${exp.category}"
+                                               placeholder="e.g., Food & Dining"
+                                               style="font-size: 1em; padding: 12px;">
+                                    </div>
+                                </div>
+
+                                <div class="edit-section">
+                                    <label class="edit-label">🛒 Items (comma-separated)</label>
+                                    <textarea id="edit-items-${exp.id}"
+                                              class="edit-field"
+                                              placeholder="Item 1, Item 2, Item 3"
+                                              style="font-size: 1em;
+                                                     padding: 12px;
+                                                     min-height: 80px;
+                                                     resize: vertical;
+                                                     font-family: inherit;">${exp.items.join(', ')}</textarea>
+                                </div>
+
+                                <div id="error-${exp.id}" style="margin-top: -10px;"></div>
+
+                                <div style="display: flex;
+                                            gap: 12px;
+                                            justify-content: flex-end;
+                                            align-items: center;
+                                            padding-top: 15px;
+                                            border-top: 2px solid rgba(102, 126, 234, 0.2);">
+                                    <span id="save-indicator-${exp.id}"
+                                          class="save-indicator"
+                                          style="display: none;
+                                                 margin-right: auto;
+                                                 background: #d4edda;
+                                                 color: #155724;
+                                                 padding: 8px 15px;
+                                                 border-radius: 8px;
+                                                 font-weight: 600;">
+                                        ✅ Saved Successfully!
+                                    </span>
+                                    <button class="btn btn-secondary btn-small"
+                                            onclick="cancelEdit()"
+                                            style="padding: 10px 20px; font-size: 1em;">
                                         ❌ Cancel
                                     </button>
-                                    <button class="btn btn-success btn-small" onclick="saveEditedExpense(${exp.id})">
-                                        💾 Save
+                                    <button class="btn btn-success btn-small"
+                                            onclick="saveEditedExpense(${exp.id})"
+                                            style="padding: 10px 25px;
+                                                   font-size: 1em;
+                                                   background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+                                                   box-shadow: 0 4px 15px rgba(67, 233, 123, 0.4);">
+                                        💾 Save Changes
                                     </button>
                                 </div>
                             </div>
                         `;
                     } else {
                         const isSelected = selectedExpenseIds.has(exp.id);
+                        const status = exp.status || 'pending';
+                        const hasNewComments = exp.comments && exp.comments.length > 0 &&
+                            exp.comments.some(c => c.author === 'Manager' && !c.read);
+                        const commentCount = exp.comments ? exp.comments.length : 0;
+                        
                         return `
                             <div class="expense-item ${isSelected ? 'selected' : ''}" id="expense-${exp.id}">
                                 <div class="expense-checkbox">
@@ -1668,12 +2355,19 @@
                                            onchange="toggleExpenseSelection(${exp.id})"
                                            ${isSelected ? 'checked' : ''}>
                                 </div>
-                                <div class="expense-info">
-                                    <div class="expense-merchant">${exp.merchant}</div>
+                                <div class="expense-info" style="flex: 1;">
+                                    <div class="expense-merchant">
+                                        ${exp.merchant}
+                                        <span class="status-badge status-${status}">${status}</span>
+                                        ${hasNewComments ? '<span class="notification-dot"></span>' : ''}
+                                    </div>
                                     <div class="expense-details">
                                         ${exp.date} • ${exp.category}<br>
                                         ${exp.items.join(', ')}
                                     </div>
+                                    <button class="view-comments-btn" onclick="viewComments(${exp.id})">
+                                        💬 View Comments ${commentCount > 0 ? `(${commentCount})` : ''}
+                                    </button>
                                 </div>
                                 <div class="expense-amount">${formatPHP(exp.amount)}</div>
                                 <div class="expense-actions">
@@ -1689,12 +2383,67 @@
                     }
                 }).join('');
                 
-                expensesList.innerHTML = bulkActionsHTML + expensesHTML;
+                expensesList.innerHTML = submitSectionHTML + bulkActionsHTML + expensesHTML;
             }
             
             // Save to localStorage after any update
             saveToLocalStorage();
         }
+
+        // View Comments Modal Functions
+        function viewComments(expenseId) {
+            const expense = expenses.find(e => e.id === expenseId);
+            if (!expense) return;
+
+            const modalBody = document.getElementById('commentsModalBody');
+            
+            if (expense.comments && expense.comments.length > 0) {
+                modalBody.innerHTML = expense.comments.map(comment => `
+                    <div class="comment-item">
+                        <div class="comment-author">${comment.author}</div>
+                        <div class="comment-text">${comment.text}</div>
+                        <div class="comment-time">${formatCommentTime(comment.timestamp)}</div>
+                    </div>
+                `).join('');
+
+                // Mark comments as read
+                expense.comments.forEach(c => c.read = true);
+                saveToLocalStorage();
+                updateDashboard();
+            } else {
+                modalBody.innerHTML = '<div class="no-comments-message">No comments yet from the manager.</div>';
+            }
+
+            document.getElementById('commentsModalOverlay').classList.add('active');
+        }
+
+        function closeCommentsModal(event) {
+            if (event && event.target.id !== 'commentsModalOverlay' && event.type === 'click') {
+                return;
+            }
+            document.getElementById('commentsModalOverlay').classList.remove('active');
+        }
+
+        function formatCommentTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString('en-PH', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modal = document.getElementById('commentsModalOverlay');
+                if (modal && modal.classList.contains('active')) {
+                    closeCommentsModal();
+                }
+            }
+        });
 
         function addUserMessage(text) {
             addMessage('user', text);
@@ -1702,6 +2451,7 @@
 
         function addBotMessage(text, isHTML = false) {
             addMessage('bot', text, isHTML);
+
         }
 
         function addMessage(type, content, isHTML = false) {
@@ -1715,6 +2465,7 @@
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: true
+
             });
             
             if (isHTML) {
@@ -1726,6 +2477,7 @@
                 
                 const time = document.createElement('div');
                 time.className = 'timestamp';
+
                 time.textContent = timestamp;
                 
                 messageDiv.appendChild(bubble);
@@ -1736,7 +2488,25 @@
             
             messagesDiv.appendChild(messageDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
         }
+
     </script>
+</body>
+</html>
+
+
+    <!-- Comments Modal -->
+    <div id="commentsModalOverlay" class="comments-modal-overlay" onclick="closeCommentsModal(event)">
+        <div class="comments-modal" onclick="event.stopPropagation()">
+            <div class="comments-modal-header">
+                <h3>💬 Manager Comments</h3>
+                <button class="comments-modal-close" onclick="closeCommentsModal()">×</button>
+            </div>
+            <div class="comments-modal-body" id="commentsModalBody">
+                <!-- Comments will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
 </body>
 </html>
