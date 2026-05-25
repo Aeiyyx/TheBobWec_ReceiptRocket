@@ -1,0 +1,630 @@
+{
+  "@context": {
+    "rr": "http://receiptrocket.example.com/schema#",
+    "schema": "http://schema.org/",
+    "id": "@id",
+    "type": "@type",
+    "name": "schema:name",
+    "description": "schema:description",
+    "attributes": "rr:attributes",
+    "identityKey": "rr:identityKey",
+    "humanRef": "rr:humanRef",
+    "invariant": "rr:invariant",
+    "hasState": {
+      "@id": "rr:hasState",
+      "@type": "@id"
+    },
+    "initialState": {
+      "@id": "rr:initialState",
+      "@type": "@id"
+    },
+    "terminalStates": {
+      "@id": "rr:terminalStates",
+      "@type": "@id"
+    },
+    "relatesTo": {
+      "@id": "rr:relatesTo",
+      "@type": "@id"
+    },
+    "emitsEvent": {
+      "@id": "rr:emitsEvent",
+      "@type": "@id"
+    },
+    "from": {
+      "@id": "rr:from",
+      "@type": "@id"
+    },
+    "to": {
+      "@id": "rr:to",
+      "@type": "@id"
+    },
+    "precondition": "rr:precondition",
+    "postcondition": "rr:postcondition",
+    "Entity": "rr:Entity",
+    "Operation": "rr:Operation",
+    "State": "rr:State"
+  },
+  "@graph": [
+    {
+      "id": "rr:FunctionalRequirement",
+      "type": "Entity",
+      "name": "FunctionalRequirement",
+      "description": "Describes a specific behavior or function of the ReceiptRocket system",
+      "identityKey": "requirementId: UUID",
+      "humanRef": "requirementCode",
+      "attributes": {
+        "requirementId": "string",
+        "requirementCode": "string",
+        "name": "string",
+        "description": "string",
+        "acceptanceCriteria": "array",
+        "priority": "CRITICAL|HIGH|MEDIUM|LOW",
+        "status": "IMPLEMENTED|PARTIAL|PLANNED"
+      },
+      "invariant": [
+        "requirementCode must be unique",
+        "Must define clear acceptance criteria"
+      ],
+      "hasState": [
+        "rr:RequirementPlanned",
+        "rr:RequirementImplemented",
+        "rr:RequirementVerified"
+      ],
+      "initialState": "rr:RequirementPlanned",
+      "terminalStates": ["rr:RequirementVerified"],
+      "relatesTo": [
+        "rr:Stakeholder",
+        "rr:BusinessGoal",
+        "rr:UseCase",
+        "rr:TestCase"
+      ]
+    },
+    {
+      "id": "rr:PerformanceRequirement",
+      "type": "Entity",
+      "name": "PerformanceRequirement",
+      "description": "Describes performance constraints and targets",
+      "identityKey": "requirementId: UUID",
+      "humanRef": "requirementCode",
+      "attributes": {
+        "requirementId": "string",
+        "requirementCode": "string",
+        "name": "string",
+        "description": "string",
+        "priority": "CRITICAL|HIGH|MEDIUM|LOW",
+        "status": "IMPLEMENTED|PARTIAL|PLANNED"
+      },
+      "relatesTo": ["rr:BusinessGoal", "rr:TestCase"]
+    },
+    {
+      "id": "rr:SecurityRequirement",
+      "type": "Entity",
+      "name": "SecurityRequirement",
+      "description": "Describes security constraints and protections",
+      "identityKey": "requirementId: UUID",
+      "humanRef": "requirementCode",
+      "attributes": {
+        "requirementId": "string",
+        "requirementCode": "string",
+        "name": "string",
+        "description": "string",
+        "priority": "CRITICAL|HIGH|MEDIUM|LOW",
+        "status": "IMPLEMENTED|PARTIAL|PLANNED"
+      },
+      "relatesTo": ["rr:BusinessGoal"]
+    },
+    {
+      "id": "rr:Stakeholder",
+      "type": "Entity",
+      "name": "Stakeholder",
+      "description": "An individual or group with interest in the system",
+      "identityKey": "stakeholderId: UUID",
+      "humanRef": "stakeholderName",
+      "attributes": {
+        "stakeholderId": "string",
+        "stakeholderName": "string",
+        "role": "string",
+        "interests": "array",
+        "painPoints": "array"
+      },
+      "invariant": ["stakeholderName must be unique"],
+      "relatesTo": ["rr:FunctionalRequirement", "rr:BusinessGoal"]
+    },
+    {
+      "id": "rr:BusinessGoal",
+      "type": "Entity",
+      "name": "BusinessGoal",
+      "description": "A high-level business objective",
+      "identityKey": "goalId: UUID",
+      "humanRef": "goalName",
+      "attributes": {
+        "goalId": "string",
+        "goalName": "string",
+        "description": "string",
+        "targetMetric": "string",
+        "priority": "HIGH|MEDIUM|LOW",
+        "measurableOutcome": "string"
+      },
+      "invariant": ["goalName must be unique"],
+      "relatesTo": ["rr:FunctionalRequirement", "rr:Stakeholder"]
+    },
+    {
+      "id": "rr:UseCase",
+      "type": "Entity",
+      "name": "UseCase",
+      "description": "A specific scenario of system usage",
+      "identityKey": "useCaseId: UUID",
+      "humanRef": "useCaseCode",
+      "attributes": {
+        "useCaseId": "string",
+        "useCaseCode": "string",
+        "name": "string",
+        "description": "string",
+        "actor": "string",
+        "preconditions": "array",
+        "mainFlow": "array",
+        "postconditions": "array"
+      },
+      "relatesTo": ["rr:FunctionalRequirement", "rr:TestCase"]
+    },
+    {
+      "id": "rr:TestCase",
+      "type": "Entity",
+      "name": "TestCase",
+      "description": "A test that verifies requirement implementation",
+      "identityKey": "testCaseId: UUID",
+      "humanRef": "testCaseCode",
+      "attributes": {
+        "testCaseId": "string",
+        "testCaseCode": "string",
+        "name": "string",
+        "description": "string",
+        "testType": "FUNCTIONAL|PERFORMANCE|SECURITY",
+        "status": "PASS|FAIL|PENDING"
+      },
+      "relatesTo": ["rr:FunctionalRequirement", "rr:UseCase"]
+    },
+    {
+      "id": "rr:Satisfies",
+      "type": "Operation",
+      "name": "Satisfies",
+      "description": "Requirement satisfies a business goal",
+      "from": "rr:FunctionalRequirement",
+      "to": "rr:BusinessGoal",
+      "precondition": ["Requirement must exist", "BusinessGoal must exist"],
+      "postcondition": ["Requirement contributes to achieving the BusinessGoal"]
+    },
+    {
+      "id": "rr:DependsOn",
+      "type": "Operation",
+      "name": "DependsOn",
+      "description": "Defines dependency between requirements",
+      "from": "rr:FunctionalRequirement",
+      "to": "rr:FunctionalRequirement",
+      "precondition": ["Both requirements must exist", "No circular dependencies"],
+      "postcondition": ["Dependency relationship is recorded"]
+    },
+    {
+      "id": "rr:ConflictsWith",
+      "type": "Operation",
+      "name": "ConflictsWith",
+      "description": "Identifies conflicting requirements",
+      "from": "rr:SecurityRequirement",
+      "to": "rr:PerformanceRequirement",
+      "precondition": ["Both requirements must exist"],
+      "postcondition": ["Conflict is recorded for resolution"]
+    },
+    {
+      "id": "rr:VerifiedBy",
+      "type": "Operation",
+      "name": "VerifiedBy",
+      "description": "Requirement verified by test cases",
+      "from": "rr:FunctionalRequirement",
+      "to": "rr:TestCase",
+      "precondition": ["Requirement must be implemented"],
+      "postcondition": ["Requirement is verified by TestCase"]
+    },
+    {
+      "id": "rr:RequirementPlanned",
+      "type": "State",
+      "name": "RequirementPlanned",
+      "description": "Requirement is planned but not yet implemented"
+    },
+    {
+      "id": "rr:RequirementImplemented",
+      "type": "State",
+      "name": "RequirementImplemented",
+      "description": "Requirement has been implemented"
+    },
+    {
+      "id": "rr:RequirementVerified",
+      "type": "State",
+      "name": "RequirementVerified",
+      "description": "Requirement has been tested and verified"
+    },
+    {
+      "id": "rr:Goal_ReduceProcessingTime",
+      "type": "BusinessGoal",
+      "name": "Reduce Expense Processing Time",
+      "description": "Decrease time from receipt to reimbursement by 90%",
+      "attributes": {
+        "goalId": "GOAL001",
+        "goalName": "Reduce Expense Processing Time",
+        "targetMetric": "30 seconds per expense (from 15 minutes)",
+        "priority": "HIGH",
+        "measurableOutcome": "90% reduction in processing time"
+      },
+      "relatesTo": [
+        "rr:Stakeholder_Employees",
+        "rr:FR001_ReceiptUpload",
+        "rr:FR002_OCRExtraction",
+        "rr:PERF001_OCRSpeed"
+      ]
+    },
+    {
+      "id": "rr:Goal_ImproveAccuracy",
+      "type": "BusinessGoal",
+      "name": "Improve Data Accuracy",
+      "description": "Reduce data entry errors through automated extraction",
+      "attributes": {
+        "goalId": "GOAL002",
+        "goalName": "Improve Data Accuracy",
+        "targetMetric": "70-85% OCR accuracy",
+        "priority": "HIGH",
+        "measurableOutcome": "70% reduction in errors"
+      },
+      "relatesTo": [
+        "rr:Stakeholder_FinanceTeam",
+        "rr:FR002_OCRExtraction",
+        "rr:FR003_DataExtraction"
+      ]
+    },
+    {
+      "id": "rr:Goal_EnhanceUserExperience",
+      "type": "BusinessGoal",
+      "name": "Enhance User Experience",
+      "description": "Provide intuitive, conversational interface",
+      "attributes": {
+        "goalId": "GOAL003",
+        "goalName": "Enhance User Experience",
+        "targetMetric": "User satisfaction > 4.5/5",
+        "priority": "MEDIUM",
+        "measurableOutcome": "Chat-based interface with real-time feedback"
+      },
+      "relatesTo": [
+        "rr:Stakeholder_Employees",
+        "rr:FR004_ConversationalInterface"
+      ]
+    },
+    {
+      "id": "rr:Stakeholder_Employees",
+      "type": "Stakeholder",
+      "name": "Employees",
+      "description": "End users who submit expense reports",
+      "attributes": {
+        "stakeholderId": "STK001",
+        "stakeholderName": "Employees",
+        "role": "Primary User",
+        "interests": ["Quick expense submission", "Easy-to-use interface", "Fast reimbursement"],
+        "painPoints": ["Manual data entry is time-consuming", "Lost receipts", "Delayed reimbursements"]
+      },
+      "relatesTo": [
+        "rr:Goal_ReduceProcessingTime",
+        "rr:Goal_EnhanceUserExperience"
+      ]
+    },
+    {
+      "id": "rr:Stakeholder_FinanceTeam",
+      "type": "Stakeholder",
+      "name": "Finance Team",
+      "description": "Finance professionals who process and audit expenses",
+      "attributes": {
+        "stakeholderId": "STK002",
+        "stakeholderName": "Finance Team",
+        "role": "Processor",
+        "interests": ["Accurate data", "Audit trail", "Reporting capabilities"],
+        "painPoints": ["Data entry errors", "Missing receipts", "Reconciliation challenges"]
+      },
+      "relatesTo": [
+        "rr:Goal_ImproveAccuracy"
+      ]
+    },
+    {
+      "id": "rr:FR001_ReceiptUpload",
+      "type": "FunctionalRequirement",
+      "name": "Receipt Photo Upload",
+      "description": "System shall allow users to upload receipt photos in JPG, PNG formats",
+      "attributes": {
+        "requirementId": "FR001",
+        "requirementCode": "FR001",
+        "priority": "CRITICAL",
+        "status": "IMPLEMENTED",
+        "acceptanceCriteria": [
+          "Support JPG and PNG formats",
+          "Maximum file size 10MB",
+          "Display upload progress",
+          "Validate image format before processing"
+        ]
+      },
+      "relatesTo": [
+        "rr:Goal_ReduceProcessingTime",
+        "rr:UseCase_UploadReceipt",
+        "rr:TestCase_TC001"
+      ]
+    },
+    {
+      "id": "rr:FR002_OCRExtraction",
+      "type": "FunctionalRequirement",
+      "name": "OCR Text Extraction",
+      "description": "System shall extract text from receipt images using Tesseract OCR",
+      "attributes": {
+        "requirementId": "FR002",
+        "requirementCode": "FR002",
+        "priority": "CRITICAL",
+        "status": "IMPLEMENTED",
+        "acceptanceCriteria": [
+          "Extract text with 70-85% accuracy",
+          "Process within 3-5 seconds",
+          "Handle various receipt formats",
+          "Return raw OCR text"
+        ]
+      },
+      "relatesTo": [
+        "rr:Goal_ImproveAccuracy",
+        "rr:Goal_ReduceProcessingTime",
+        "rr:FR001_ReceiptUpload",
+        "rr:UseCase_UploadReceipt",
+        "rr:TestCase_TC002"
+      ]
+    },
+    {
+      "id": "rr:FR003_DataExtraction",
+      "type": "FunctionalRequirement",
+      "name": "Data Extraction",
+      "description": "System shall automatically extract amount, date, merchant, and category from OCR text",
+      "attributes": {
+        "requirementId": "FR003",
+        "requirementCode": "FR003",
+        "priority": "CRITICAL",
+        "status": "IMPLEMENTED",
+        "acceptanceCriteria": [
+          "Extract dollar amounts with $ symbol",
+          "Parse dates in multiple formats",
+          "Identify merchant from first line",
+          "Auto-categorize based on keywords"
+        ]
+      },
+      "relatesTo": [
+        "rr:Goal_ImproveAccuracy",
+        "rr:FR002_OCRExtraction",
+        "rr:UseCase_UploadReceipt",
+        "rr:TestCase_TC003"
+      ]
+    },
+    {
+      "id": "rr:FR004_ConversationalInterface",
+      "type": "FunctionalRequirement",
+      "name": "Conversational Interface",
+      "description": "System shall provide chat-based interface with BOB for natural interaction",
+      "attributes": {
+        "requirementId": "FR004",
+        "requirementCode": "FR004",
+        "priority": "HIGH",
+        "status": "IMPLEMENTED",
+        "acceptanceCriteria": [
+          "Respond to greetings",
+          "Provide help information",
+          "Show expense summaries",
+          "Display real-time status"
+        ]
+      },
+      "relatesTo": [
+        "rr:Goal_EnhanceUserExperience",
+        "rr:UseCase_ChatWithBOB",
+        "rr:TestCase_TC004"
+      ]
+    },
+    {
+      "id": "rr:FR005_ExpenseStorage",
+      "type": "FunctionalRequirement",
+      "name": "Expense Storage",
+      "description": "System shall store approved expenses in SQLite database",
+      "attributes": {
+        "requirementId": "FR005",
+        "requirementCode": "FR005",
+        "priority": "CRITICAL",
+        "status": "IMPLEMENTED",
+        "acceptanceCriteria": [
+          "Store all expense fields",
+          "Generate unique expense ID",
+          "Maintain creation timestamp",
+          "Support CRUD operations"
+        ]
+      },
+      "relatesTo": [
+        "rr:FR003_DataExtraction",
+        "rr:TestCase_TC005"
+      ]
+    },
+    {
+      "id": "rr:PERF001_OCRSpeed",
+      "type": "PerformanceRequirement",
+      "name": "OCR Processing Speed",
+      "description": "System shall process receipts within 3-5 seconds",
+      "attributes": {
+        "requirementId": "PERF001",
+        "requirementCode": "PERF001",
+        "priority": "HIGH",
+        "status": "IMPLEMENTED",
+        "acceptanceCriteria": [
+          "Average processing time < 5 seconds",
+          "95th percentile < 7 seconds",
+          "Timeout at 10 seconds",
+          "Progress indication"
+        ]
+      },
+      "relatesTo": [
+        "rr:Goal_ReduceProcessingTime",
+        "rr:SEC001_DataEncryption",
+        "rr:TestCase_TC002"
+      ]
+    },
+    {
+      "id": "rr:SEC001_DataEncryption",
+      "type": "SecurityRequirement",
+      "name": "Data Encryption",
+      "description": "System shall encrypt sensitive data in transit and at rest",
+      "attributes": {
+        "requirementId": "SEC001",
+        "requirementCode": "SEC001",
+        "priority": "CRITICAL",
+        "status": "PLANNED",
+        "acceptanceCriteria": [
+          "HTTPS for all API calls",
+          "Database encryption",
+          "Secure file storage",
+          "No plain text passwords"
+        ]
+      },
+      "relatesTo": [
+        "rr:PERF001_OCRSpeed"
+      ]
+    },
+    {
+      "id": "rr:UseCase_UploadReceipt",
+      "type": "UseCase",
+      "name": "Upload Receipt Photo",
+      "description": "User uploads a receipt photo for processing",
+      "attributes": {
+        "useCaseId": "UC001",
+        "useCaseCode": "UC001",
+        "actor": "Employee",
+        "preconditions": ["User has access to the application", "User has a receipt photo"],
+        "mainFlow": [
+          "User clicks 'Upload Receipt' button",
+          "System opens file picker",
+          "User selects receipt photo",
+          "System validates file format and size",
+          "System displays processing message",
+          "System sends image to OCR service",
+          "System extracts expense data",
+          "System displays extracted data for confirmation"
+        ],
+        "postconditions": ["Receipt data is extracted", "User can confirm or reject data"]
+      },
+      "relatesTo": [
+        "rr:FR001_ReceiptUpload",
+        "rr:FR002_OCRExtraction",
+        "rr:FR003_DataExtraction",
+        "rr:TestCase_TC001",
+        "rr:TestCase_TC002",
+        "rr:TestCase_TC003"
+      ]
+    },
+    {
+      "id": "rr:UseCase_ChatWithBOB",
+      "type": "UseCase",
+      "name": "Chat with BOB",
+      "description": "User interacts with BOB conversational interface",
+      "attributes": {
+        "useCaseId": "UC002",
+        "useCaseCode": "UC002",
+        "actor": "Employee",
+        "preconditions": ["User has access to the application"],
+        "mainFlow": [
+          "User types message in chat input",
+          "User presses Enter or clicks Send",
+          "System sends message to BOB service",
+          "BOB processes message and determines intent",
+          "BOB generates appropriate response",
+          "System displays BOB's response"
+        ],
+        "postconditions": ["User receives helpful response", "Conversation history is maintained"]
+      },
+      "relatesTo": [
+        "rr:FR004_ConversationalInterface",
+        "rr:TestCase_TC004"
+      ]
+    },
+    {
+      "id": "rr:TestCase_TC001",
+      "type": "TestCase",
+      "name": "Test Receipt Upload",
+      "description": "Verify receipt photo upload functionality",
+      "attributes": {
+        "testCaseId": "TC001",
+        "testCaseCode": "TC001",
+        "testType": "FUNCTIONAL",
+        "status": "PASS"
+      },
+      "relatesTo": [
+        "rr:FR001_ReceiptUpload",
+        "rr:UseCase_UploadReceipt"
+      ]
+    },
+    {
+      "id": "rr:TestCase_TC002",
+      "type": "TestCase",
+      "name": "Test OCR Processing",
+      "description": "Verify OCR text extraction from receipt",
+      "attributes": {
+        "testCaseId": "TC002",
+        "testCaseCode": "TC002",
+        "testType": "FUNCTIONAL",
+        "status": "PASS"
+      },
+      "relatesTo": [
+        "rr:FR002_OCRExtraction",
+        "rr:PERF001_OCRSpeed",
+        "rr:UseCase_UploadReceipt"
+      ]
+    },
+    {
+      "id": "rr:TestCase_TC003",
+      "type": "TestCase",
+      "name": "Test Data Extraction",
+      "description": "Verify automatic extraction of expense fields",
+      "attributes": {
+        "testCaseId": "TC003",
+        "testCaseCode": "TC003",
+        "testType": "FUNCTIONAL",
+        "status": "PASS"
+      },
+      "relatesTo": [
+        "rr:FR003_DataExtraction",
+        "rr:UseCase_UploadReceipt"
+      ]
+    },
+    {
+      "id": "rr:TestCase_TC004",
+      "type": "TestCase",
+      "name": "Test BOB Chat Interface",
+      "description": "Verify conversational interface responses",
+      "attributes": {
+        "testCaseId": "TC004",
+        "testCaseCode": "TC004",
+        "testType": "FUNCTIONAL",
+        "status": "PASS"
+      },
+      "relatesTo": [
+        "rr:FR004_ConversationalInterface",
+        "rr:UseCase_ChatWithBOB"
+      ]
+    },
+    {
+      "id": "rr:TestCase_TC005",
+      "type": "TestCase",
+      "name": "Test Expense Storage",
+      "description": "Verify expense is stored in database",
+      "attributes": {
+        "testCaseId": "TC005",
+        "testCaseCode": "TC005",
+        "testType": "FUNCTIONAL",
+        "status": "PASS"
+      },
+      "relatesTo": [
+        "rr:FR005_ExpenseStorage"
+      ]
+    }
+  ]
+}
