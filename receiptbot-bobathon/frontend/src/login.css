@@ -1,0 +1,542 @@
+/*
+ * ============================================================================
+ * RECEIPTROCKET - LOGIN PAGE STYLESHEET
+ * ============================================================================
+ * 
+ * This stylesheet provides all the styling for the ReceiptRocket login page.
+ * 
+ * Features:
+ * - Role selection (Employee/Manager)
+ * - Email and password input fields
+ * - Remember me functionality
+ * - Responsive design for mobile devices
+ * - Smooth animations and transitions
+ * - Accessibility features
+ * 
+ * Color Scheme:
+ * - Primary: #667eea (Purple Blue)
+ * - Secondary: #764ba2 (Deep Purple)
+ * - Error: #ef4444 (Red)
+ * - Success: #3c3 (Green)
+ * 
+ * ============================================================================
+ */
+
+/* ============================================================================
+   GLOBAL STYLES
+   ============================================================================ */
+
+/* Reset default browser styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Main body with gradient background and centered content */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* ============================================================================
+   LOGIN CONTAINER
+   ============================================================================ */
+
+/* Main login card with slide-up animation */
+.login-container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    overflow: hidden;
+    max-width: 450px;
+    width: 100%;
+    animation: slideUp 0.5s ease-out;
+}
+
+/* Slide-up entrance animation */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================================================
+   HEADER SECTION
+   ============================================================================ */
+
+/* Header with gradient background */
+.login-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 40px 30px;
+    text-align: center;
+    color: white;
+}
+
+/* Animated logo icon */
+.logo {
+    font-size: 3em;
+    margin-bottom: 10px;
+    animation: bounce 1s ease-in-out infinite;
+}
+
+/* Bounce animation for logo */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Header title */
+.login-header h1 {
+    font-size: 2em;
+    margin-bottom: 5px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Header subtitle */
+.login-header p {
+    font-size: 0.95em;
+    opacity: 0.9;
+}
+
+/* ============================================================================
+   LOGIN FORM BODY
+   ============================================================================ */
+
+/* Main form container */
+.login-body {
+    padding: 40px 30px;
+}
+
+/* ============================================================================
+   ROLE SELECTOR
+   ============================================================================ */
+
+/* Role selection buttons container */
+.role-selector {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    justify-content: center;
+}
+
+/* Individual role option wrapper */
+.role-option {
+    flex: 1;
+    position: relative;
+}
+
+/* Hide default radio button */
+.role-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Custom role button styling */
+.role-label {
+    display: block;
+    padding: 15px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    color: #666;
+}
+
+/* Selected role styling */
+.role-option input[type="radio"]:checked + .role-label {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: #667eea;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Hover effect for role buttons */
+.role-label:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+}
+
+/* Role icon styling */
+.role-icon {
+    font-size: 1.5em;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* ============================================================================
+   FORM INPUTS
+   ============================================================================ */
+
+/* Form group spacing */
+.form-group {
+    margin-bottom: 25px;
+}
+
+/* Form labels */
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 600;
+    font-size: 0.95em;
+}
+
+/* Input wrapper for icon positioning */
+.input-wrapper {
+    position: relative;
+}
+
+/* Text input fields */
+.form-group input[type="email"],
+.form-group input[type="text"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 14px 45px 14px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+/* Input focus state */
+.form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+/* Error state for inputs */
+.form-group input.error {
+    border-color: #ef4444;
+}
+
+/* Input icon positioning */
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 1.2em;
+}
+
+/* Password toggle button */
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    color: #999;
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+
+.toggle-password:hover {
+    color: #667eea;
+}
+
+/* ============================================================================
+   ERROR MESSAGES
+   ============================================================================ */
+
+/* Error message styling */
+.error-message {
+    color: #ef4444;
+    font-size: 0.85em;
+    margin-top: 5px;
+    display: none;
+}
+
+/* Show error message with shake animation */
+.error-message.show {
+    display: block;
+    animation: shake 0.3s ease;
+}
+
+/* Shake animation for errors */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* ============================================================================
+   REMEMBER ME & FORGOT PASSWORD
+   ============================================================================ */
+
+/* Container for remember me and forgot password */
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    font-size: 0.9em;
+}
+
+/* Remember me checkbox container */
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+/* Remember me checkbox styling */
+.remember-me input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #667eea;
+}
+
+/* Forgot password link */
+.forgot-password {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
+/* ============================================================================
+   LOGIN BUTTON
+   ============================================================================ */
+
+/* Main login button with gradient and shine effect */
+.login-button {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shine effect on button */
+.login-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s;
+}
+
+.login-button:hover::before {
+    left: 100%;
+}
+
+/* Button hover state */
+.login-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+/* Button active state */
+.login-button:active {
+    transform: translateY(0);
+}
+
+/* Disabled button state */
+.login-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ============================================================================
+   ALERTS & NOTIFICATIONS
+   ============================================================================ */
+
+/* Alert container */
+.alert {
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: none;
+    animation: slideDown 0.3s ease;
+}
+
+/* Slide down animation for alerts */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Show alert */
+.alert.show {
+    display: block;
+}
+
+/* Error alert styling */
+.alert-error {
+    background: #fee;
+    color: #c33;
+    border: 1px solid #fcc;
+}
+
+/* Success alert styling */
+.alert-success {
+    background: #efe;
+    color: #3c3;
+    border: 1px solid #cfc;
+}
+
+/* ============================================================================
+   LOADING SPINNER
+   ============================================================================ */
+
+/* Loading spinner for button */
+.loading-spinner {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto;
+}
+
+/* Spin animation */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Hide button text when loading */
+.login-button.loading .button-text {
+    display: none;
+}
+
+/* Show spinner when loading */
+.login-button.loading .loading-spinner {
+    display: block;
+}
+
+/* ============================================================================
+   FOOTER & SESSION INFO
+   ============================================================================ */
+
+/* Footer text */
+.footer-text {
+    text-align: center;
+    margin-top: 25px;
+    color: #999;
+    font-size: 0.85em;
+}
+
+/* Session information display */
+.session-info {
+    background: #f0f4ff;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+    color: #667eea;
+    display: none;
+}
+
+.session-info.show {
+    display: block;
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+/* Mobile devices */
+@media (max-width: 480px) {
+    .login-container {
+        border-radius: 15px;
+    }
+
+    .login-header {
+        padding: 30px 20px;
+    }
+
+    .login-header h1 {
+        font-size: 1.6em;
+    }
+
+    .login-body {
+        padding: 30px 20px;
+    }
+
+    .role-selector {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .remember-forgot {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+}
+
+/* ============================================================================
+   ACCESSIBILITY
+   ============================================================================ */
+
+/* Screen reader only content */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Focus visible for keyboard navigation */
+*:focus-visible {
+    outline: 3px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* Made with Bob */
