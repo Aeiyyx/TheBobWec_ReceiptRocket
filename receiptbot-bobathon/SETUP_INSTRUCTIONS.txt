@@ -1,9 +1,232 @@
 ================================================================================
-  RECEIPTBOT - SETUP INSTRUCTIONS FOR BOB-A-THON31
+  RECEIPTROCKET - SETUP INSTRUCTIONS FOR BOB-A-THON31
 ================================================================================
 
-📋 PREREQUISITES CHECKLIST
---------------------------
+⚠️ IMPORTANT: CURRENT IMPLEMENTATION
+================================================================================
+Due to IBM App Store limitations (unable to install Node.js, npm, Python, and 
+other dependencies), this project currently uses STANDALONE STATIC HTML FILES 
+that work directly in the browser without requiring any backend setup.
+
+👉 FOLLOW THE "CURRENT SETUP" INSTRUCTIONS BELOW 👈
+
+For reference, the original planned full-stack setup is documented at the 
+bottom of this file under "ORIGINAL PLANNED SETUP (NOT CURRENTLY USED)".
+
+
+################################################################################
+#                                                                              #
+#                    CURRENT SETUP (STANDALONE STATIC HTML)                    #
+#                                                                              #
+################################################################################
+
+
+================================================================================
+  📋 PREREQUISITES CHECKLIST
+================================================================================
+
+Before starting, make sure you have:
+
+□ A modern web browser (Chrome, Firefox, Edge, or Safari)
+
+That's it! No installations required.
+
+
+================================================================================
+  STEP-BY-STEP SETUP
+================================================================================
+
+STEP 1: OPEN THE DEMO
+----------------------
+
+1. Navigate to the frontend/public folder:
+   Desktop/receiptbot-bobathon/frontend/public
+
+2. Open the HTML files in your browser:
+   
+   OPTION A - Using the batch file (Windows):
+   - Double-click open-demo.bat in the root folder
+   - This will open demo.html in your default browser
+   
+   OPTION B - Manual opening:
+   - Right-click on demo.html
+   - Select "Open with" → Your preferred browser
+   
+   Available pages:
+   • demo.html - Main demo interface
+   • login.html - Login page
+   • manager-dashboard.html - Manager dashboard
+
+3. That's it! The demo is ready to use.
+
+
+================================================================================
+  USING THE DEMO
+================================================================================
+
+The static HTML demo provides a fully functional interface demonstration:
+
+1. EXPLORE THE INTERFACE
+   - View the chat interface
+   - See the "Upload Receipt" button
+   - Interact with BOB responses
+
+2. DEMO FEATURES
+   - Simulated receipt upload
+   - Mock OCR data extraction
+   - Expense submission flow
+   - Dashboard views
+
+3. NAVIGATION
+   - Switch between demo.html, login.html, and manager-dashboard.html
+   - All pages work independently in the browser
+
+
+================================================================================
+  DEMO DAY PREPARATION
+================================================================================
+
+1 DAY BEFORE:
+□ Test opening all HTML files
+□ Practice demo script
+□ Prepare talking points
+□ Charge laptop fully
+□ Record backup demo video
+
+DEMO DAY MORNING:
+□ Open demo.html in browser
+□ Test navigation between pages
+□ Clear browser cache
+□ Close unnecessary tabs
+□ Have backup materials ready
+
+DURING DEMO:
+□ Stay calm and confident
+□ Explain the problem clearly
+□ Show the interface and flow
+□ Highlight BOB + ICA integration concept
+□ Mention business value
+□ Answer questions confidently
+□ Explain the static HTML approach due to IBM restrictions
+
+
+================================================================================
+  QUICK REFERENCE
+================================================================================
+
+OPEN DEMO:
+  Windows: Double-click open-demo.bat
+  Or: Open frontend/public/demo.html in browser
+
+AVAILABLE PAGES:
+  frontend/public/demo.html - Main demo
+  frontend/public/login.html - Login page
+  frontend/public/manager-dashboard.html - Dashboard
+
+
+================================================================================
+  FILE LOCATIONS
+================================================================================
+
+Frontend (Static HTML):
+  frontend/public/demo.html - Main demo interface
+  frontend/public/login.html - Login page
+  frontend/public/manager-dashboard.html - Manager dashboard
+
+Helper:
+  open-demo.bat - Quick launcher for Windows
+
+
+================================================================================
+  IMPORTANT NOTES
+================================================================================
+
+⚠️ No backend or installations required
+⚠️ Works directly in any modern browser
+⚠️ All functionality is demonstrated through the UI
+⚠️ Perfect for showcasing the concept and design
+⚠️ Have BACKUP demo video ready
+
+
+================================================================================
+  ADVANTAGES OF STANDALONE STATIC HTML
+================================================================================
+
+✅ No installations required (Python, Node.js, Tesseract, etc.)
+✅ Works with IBM App Store restrictions
+✅ Instant setup - just open in browser
+✅ No dependencies to manage
+✅ Easy to demonstrate anywhere
+✅ Can run from USB drive or email
+✅ Lower resource usage
+✅ Perfect for concept demonstration
+
+
+================================================================================
+  TROUBLESHOOTING
+================================================================================
+
+PROBLEM: HTML page doesn't display correctly
+SOLUTION:
+  1. Try a different browser (Chrome recommended)
+  2. Clear browser cache (Ctrl+Shift+Delete)
+  3. Ensure JavaScript is enabled
+  4. Check browser console (F12) for errors
+
+PROBLEM: Batch file doesn't work
+SOLUTION:
+  1. Right-click demo.html and select "Open with" → Browser
+  2. Or drag and drop demo.html into browser window
+
+PROBLEM: Pages look broken
+SOLUTION:
+  1. Ensure all files are in frontend/public/ folder
+  2. Check that CSS/JS files are in the same directory
+  3. Try refreshing the page (F5)
+
+
+================================================================================
+  NEED HELP?
+================================================================================
+
+1. Check README.md for detailed documentation
+2. Check QUICKSTART.md for quick setup guide
+3. Check PROJECT_SUMMARY.md for project overview
+4. Check browser console (F12) for any errors
+
+
+================================================================================
+  YOU'RE READY! 🚀
+================================================================================
+
+Everything is set up and ready for Bob-a-thon31!
+
+Next steps:
+1. Open the demo files
+2. Practice your presentation
+3. Prepare talking points about the concept
+4. Get ready to impress the judges!
+
+Good luck! 🎉
+
+
+
+
+################################################################################
+#                                                                              #
+#              ORIGINAL PLANNED SETUP (NOT CURRENTLY USED)                     #
+#                                                                              #
+#  This section documents the original full-stack setup that was planned      #
+#  but could not be implemented due to IBM App Store restrictions preventing  #
+#  installation of Python, Node.js, Tesseract OCR, and other dependencies.    #
+#                                                                              #
+################################################################################
+
+
+================================================================================
+  📋 PREREQUISITES CHECKLIST (ORIGINAL PLAN)
+================================================================================
+
 Before starting, make sure you have:
 
 □ Python 3.8 or higher installed
@@ -21,7 +244,7 @@ Before starting, make sure you have:
 
 
 ================================================================================
-  STEP-BY-STEP SETUP
+  STEP-BY-STEP SETUP (ORIGINAL PLAN)
 ================================================================================
 
 STEP 1: BACKEND SETUP
@@ -57,7 +280,7 @@ STEP 1: BACKEND SETUP
    python app.py
 
    ✅ You should see:
-   🚀 ReceiptBot Backend Starting...
+   🚀 ReceiptRocket Backend Starting...
    📸 OCR Ready - Send receipt photos!
    🤖 BOB Integration Active
    ⚙️  ICA Workflows Enabled
@@ -66,8 +289,8 @@ STEP 1: BACKEND SETUP
    ⚠️ Keep this terminal window open!
 
 
-STEP 2: FRONTEND SETUP
------------------------
+STEP 2: FRONTEND SETUP (REACT/NODE.JS)
+----------------------------------------
 
 1. Open a NEW Terminal/Command Prompt window
 
@@ -96,7 +319,7 @@ STEP 2: FRONTEND SETUP
 
 
 ================================================================================
-  VERIFICATION
+  VERIFICATION (ORIGINAL PLAN)
 ================================================================================
 
 ✅ BACKEND RUNNING: http://localhost:5000
@@ -115,7 +338,7 @@ STEP 2: FRONTEND SETUP
 
 
 ================================================================================
-  TESTING THE APP
+  TESTING THE APP (ORIGINAL PLAN)
 ================================================================================
 
 1. PREPARE TEST RECEIPTS
@@ -146,7 +369,7 @@ STEP 2: FRONTEND SETUP
 
 
 ================================================================================
-  TROUBLESHOOTING
+  TROUBLESHOOTING (ORIGINAL PLAN)
 ================================================================================
 
 PROBLEM: "ModuleNotFoundError: No module named 'flask'"
@@ -191,35 +414,7 @@ SOLUTION:
 
 
 ================================================================================
-  DEMO DAY PREPARATION
-================================================================================
-
-1 DAY BEFORE:
-□ Test complete flow 3 times
-□ Prepare 3-4 test receipts
-□ Practice demo script
-□ Charge laptop fully
-□ Record backup demo video
-
-DEMO DAY MORNING:
-□ Start backend server
-□ Start frontend server
-□ Test one receipt upload
-□ Clear browser cache
-□ Close unnecessary tabs
-□ Have backup materials ready
-
-DURING DEMO:
-□ Stay calm and confident
-□ Explain problem clearly
-□ Show working demo
-□ Highlight BOB + ICA integration
-□ Mention business value
-□ Answer questions confidently
-
-
-================================================================================
-  QUICK REFERENCE
+  QUICK REFERENCE (ORIGINAL PLAN)
 ================================================================================
 
 START BACKEND:
@@ -243,7 +438,7 @@ VIEW LOGS:
 
 
 ================================================================================
-  IMPORTANT NOTES
+  IMPORTANT NOTES (ORIGINAL PLAN)
 ================================================================================
 
 ⚠️ ALWAYS run backend BEFORE frontend
@@ -253,31 +448,5 @@ VIEW LOGS:
 ⚠️ Test with MULTIPLE receipts before demo day
 ⚠️ Have BACKUP demo video ready
 
-
-================================================================================
-  NEED HELP?
-================================================================================
-
-1. Check README.md for detailed documentation
-2. Check QUICKSTART.md for quick setup guide
-3. Check PROJECT_SUMMARY.md for project overview
-4. Review error messages in terminal
-5. Check browser console (F12) for frontend errors
-
-
-================================================================================
-  YOU'RE READY! 🚀
-================================================================================
-
-Everything is set up and ready for Bob-a-thon31!
-
-Next steps:
-1. Follow setup instructions above
-2. Test the complete flow
-3. Practice your demo
-4. Prepare backup materials
-5. Get ready to impress the judges!
-
-Good luck! 🎉
 
 ================================================================================

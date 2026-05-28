@@ -6,6 +6,27 @@ ReceiptRocket is an intelligent expense reporting system that uses conversationa
 
 ---
 
+## ⚠️ IMPORTANT: Current Implementation Note
+
+**For Judges and Reviewers:**
+
+Due to IBM App Store limitations that prevent the installation of required dependencies (Python, Node.js, Tesseract OCR, npm packages), we have implemented a **standalone static HTML demonstration** for the presentation.
+
+### Current Demo Approach
+- **What's Available**: Fully functional static HTML interface (`frontend/public/demo.html`, `login.html`, `manager-dashboard.html`)
+- **How to Run**: Simply open the HTML files in any modern web browser - no installations required
+- **Purpose**: Demonstrates the complete user interface, flow, and concept
+
+### Original Planned Implementation
+The full-stack implementation documented below (Python backend with Flask, React frontend, Tesseract OCR integration) represents our **original technical design** and demonstrates:
+- The complete architecture we planned
+- How BOB and ICA would integrate in a production environment
+- The technical feasibility of the solution
+
+**The static HTML demo showcases the same user experience and business value, adapted to work within the IBM environment constraints.**
+
+---
+
 ## 🎯 Project Overview
 
 ### What It Does

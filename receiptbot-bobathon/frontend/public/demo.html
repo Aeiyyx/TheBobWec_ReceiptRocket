@@ -52,12 +52,11 @@
 
         .logout-btn {
             position: absolute;
-            top: 20px;
+            top: 10px;
             right: 10px;
-
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.95);
+            color: #667eea;
+            border: 2px solid rgba(102, 126, 234, 0.5);
             padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
@@ -67,17 +66,28 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            z-index: 10;
         }
 
         .logout-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
+            background: white;
+            border-color: #667eea;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
 
         .logout-btn:active {
             transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .logout-btn {
+                top: 5px;
+                right: 5px;
+                padding: 8px 16px;
+                font-size: 0.85em;
+            }
         }
 
         .main-content {
@@ -1033,12 +1043,11 @@
 </head>
 <body>
 
-    <button onclick="handleLogout()" class="logout-btn">
-            🚪 Logout
-    </button>
-
     <div class="container">
         <div class="header">
+            <button onclick="handleLogout()" class="logout-btn">
+                🚪 Logout
+            </button>
             <div>
                 <h1>🚀 ReceiptRocket</h1>
                 <p>AI-Powered Expense Assistant</p>
@@ -1055,7 +1064,6 @@
                                transition: transform 0.2s;">
                     👔 Manager View
                 </button>
-                
                 <span class="demo-badge">📱 DEMO VERSION - No Installation Required</span>
             </div>
         </div>
